@@ -7,18 +7,23 @@ export const useMainStore = defineStore('mainStore', {
     state: () => ({
         comfyUIPath: '',
         mainNav: 'dashboard',
-        welcome: true,
         serverIsRunning: false,
     }),
     // optional getters
-    getters: {},
+    getters: {
+        hasSetComfyUIPath() {
+            console.log(this.comfyUIPath)
+            console.log(this.comfyUIPath !== '')
+            return this.comfyUIPath !== ''
+        },
+        getAA() {
+            return this.comfyUIPath
+        }
+    },
     // optional actions
     actions: {
         setMainNav(nav) {
             this.mainNav = nav
-        },
-        setWelcome(welcome) {
-            this.welcome = welcome
         },
         setComfyUIPath(path) {
             this.comfyUIPath = path

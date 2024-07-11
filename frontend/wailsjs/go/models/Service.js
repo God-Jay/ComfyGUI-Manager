@@ -6,8 +6,8 @@ export function GetModelFileSHA256(arg1) {
   return window['go']['models']['Service']['GetModelFileSHA256'](arg1);
 }
 
-export function ListModelDir(arg1) {
-  return window['go']['models']['Service']['ListModelDir'](arg1);
+export function ListModelDir() {
+  return window['go']['models']['Service']['ListModelDir']();
 }
 
 export function StartUp(arg1) {

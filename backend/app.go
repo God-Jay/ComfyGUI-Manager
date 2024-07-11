@@ -1,7 +1,8 @@
-package main
+package backend
 
 import (
-	"comfygui-manager/comfyUI"
+	"comfygui-manager/backend/comfyUI"
+	"comfygui-manager/backend/store"
 	"context"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"os"
@@ -9,8 +10,7 @@ import (
 
 // App struct
 type App struct {
-	ctx         context.Context
-	ComfyUIPath string
+	ctx context.Context
 }
 
 // NewApp creates a new App application struct
@@ -18,14 +18,19 @@ func NewApp() *App {
 	return &App{}
 }
 
-// startup is called when the app starts. The context is saved
+// Startup is called when the app starts. The context is saved
 // so we can call the runtime methods
-func (a *App) startup(ctx context.Context) {
+func (a *App) Startup(ctx context.Context) {
 	a.ctx = ctx
 	comfyUI.RunProxy()
 }
 
-func (a *App) SetComfyUIPath() {
+func (a *App) GetComfyUIPath() string {
+	return store.ComfyUIPath
+}
+
+func (a *App) SetComfyUIPath(comfyUIPath string) error {
+	return store.SetComfyUIPath(comfyUIPath)
 }
 
 func (a *App) SelectFolder(title string) string {

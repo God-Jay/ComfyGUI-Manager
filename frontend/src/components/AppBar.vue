@@ -1,11 +1,20 @@
 <script setup>
 import Fps from "@/Fps.vue";
+import {SetComfyUIPath} from "@wailsjs/go/backend/App.js";
+import {useMainStore} from "@/stores/store.js";
+
+const mainStore = useMainStore()
 
 const activeButtonClass = 'grey-lighten-3'
 const inactiveButtonClass = 'grey'
 
 const appButton = defineModel('appButton')
 const workspaceNum = defineModel('workspaceNum')
+
+const logout = () => {
+  SetComfyUIPath('')
+  mainStore.setComfyUIPath('')
+}
 </script>
 
 <template>
@@ -28,6 +37,13 @@ const workspaceNum = defineModel('workspaceNum')
     <v-btn v-if="false"
            variant="elevated" size="small" class="ml-2" :color="inactiveButtonClass" @click="workspaceNum++">
       <v-icon icon="mdi-plus"></v-icon>
+    </v-btn>
+
+
+    <v-spacer></v-spacer>
+
+    <v-btn @click="logout">
+      <v-icon>mdi-logout</v-icon>
     </v-btn>
   </v-app-bar>
 

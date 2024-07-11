@@ -1,6 +1,7 @@
 package models
 
 import (
+	"comfygui-manager/backend/store"
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
@@ -55,9 +56,9 @@ func (d Dir) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func (s *Service) ListModelDir(comfyUIPath string) *Dir {
-	modelPath := filepath.Join(comfyUIPath, "models")
-
+func (s *Service) ListModelDir() *Dir {
+	modelPath := filepath.Join(store.ComfyUIPath, "models")
+	log.Println("listDir", modelPath)
 	return listDir(s, modelPath)
 }
 

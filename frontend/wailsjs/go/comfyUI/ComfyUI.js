@@ -6,24 +6,28 @@ export function CheckIsServerRunning() {
   return window['go']['comfyUI']['ComfyUI']['CheckIsServerRunning']();
 }
 
-export function GitHeadCommit(arg1) {
-  return window['go']['comfyUI']['ComfyUI']['GitHeadCommit'](arg1);
+export function GitHeadCommit() {
+  return window['go']['comfyUI']['ComfyUI']['GitHeadCommit']();
 }
 
-export function GitLatestCommit(arg1) {
-  return window['go']['comfyUI']['ComfyUI']['GitLatestCommit'](arg1);
+export function GitLatestCommit() {
+  return window['go']['comfyUI']['ComfyUI']['GitLatestCommit']();
 }
 
-export function GitPull(arg1) {
-  return window['go']['comfyUI']['ComfyUI']['GitPull'](arg1);
+export function GitPull() {
+  return window['go']['comfyUI']['ComfyUI']['GitPull']();
 }
 
-export function GitStatus(arg1) {
-  return window['go']['comfyUI']['ComfyUI']['GitStatus'](arg1);
+export function GitStatus() {
+  return window['go']['comfyUI']['ComfyUI']['GitStatus']();
 }
 
-export function StartServer(arg1) {
-  return window['go']['comfyUI']['ComfyUI']['StartServer'](arg1);
+export function Shutdown() {
+  return window['go']['comfyUI']['ComfyUI']['Shutdown']();
+}
+
+export function StartServer() {
+  return window['go']['comfyUI']['ComfyUI']['StartServer']();
 }
 
 export function StartUp(arg1) {

@@ -1,7 +1,7 @@
 package models
 
 import (
-	"comfygui-manager/store"
+	"comfygui-manager/backend/store"
 	"context"
 	"github.com/dgraph-io/badger/v4"
 )

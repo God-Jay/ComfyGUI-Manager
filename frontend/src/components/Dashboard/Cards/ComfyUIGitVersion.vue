@@ -11,7 +11,7 @@ const mainStore = useMainStore()
 const currentCommit = ref()
 const getHeadCommit = () => {
   console.log("get head commit")
-  GitHeadCommit(mainStore.comfyUIPath).then(r => {
+  GitHeadCommit().then(r => {
     currentCommit.value = r
     console.log(r)
   })
@@ -20,7 +20,7 @@ const getHeadCommit = () => {
 getHeadCommit()
 
 const latestCommit = ref()
-GitLatestCommit(mainStore.comfyUIPath)
+GitLatestCommit()
 EventsOn("GitLatestCommit", (commit) => {
   latestCommit.value = commit
   if (commit) {
@@ -31,7 +31,7 @@ EventsOn("GitLatestCommit", (commit) => {
 
 const behindCommits = ref([])
 const getGitStatus = () => {
-  GitStatus(mainStore.comfyUIPath).then(r => {
+  GitStatus().then(r => {
     behindCommits.value = r
   })
 }
@@ -45,7 +45,7 @@ const timeout = 3000
 
 async function update() {
   updating.value = true
-  const result = await GitPull(mainStore.comfyUIPath)
+  const result = await GitPull()
   updating.value = false
   console.log("update result", result)
   snackbar.value = true

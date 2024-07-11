@@ -1,7 +1,7 @@
 package comfyUI
 
 import (
-	"comfygui-manager/comfyUI/js_replace"
+	"comfygui-manager/backend/comfyUI/js_replace"
 	"github.com/gorilla/websocket"
 	"io"
 	"log"

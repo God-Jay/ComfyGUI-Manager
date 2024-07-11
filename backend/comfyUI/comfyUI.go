@@ -1,6 +1,7 @@
 package comfyUI
 
 import (
+	"comfygui-manager/backend/store"
 	"context"
 	"fmt"
 	"log"
@@ -11,9 +12,8 @@ import (
 )
 
 type ComfyUI struct {
-	ctx         context.Context
-	ComfyUIPath string
-	cmd         *exec.Cmd
+	ctx context.Context
+	cmd *exec.Cmd
 }
 
 func NewComfyUI() *ComfyUI {
@@ -24,14 +24,20 @@ func (c *ComfyUI) StartUp(ctx context.Context) {
 	c.ctx = ctx
 }
 
+func (c *ComfyUI) Shutdown() {
+	if c.cmd != nil {
+		c.cmd.Process.Signal(os.Interrupt)
+	}
+}
+
 func (c *ComfyUI) CheckIsServerRunning() bool {
 	return isPortInUse(8188)
 }
 
-func (c *ComfyUI) StartServer(comfyUIPath string) bool {
-	// TODO delete
+func (c *ComfyUI) StartServer() bool {
+	// TODO delete args
 	cmd := exec.Command("python", "main.py", "--force-upcast-attention")
-	cmd.Dir = comfyUIPath
+	cmd.Dir = store.ComfyUIPath
 
 	log.Println(cmd.String())
 	err := cmd.Start()

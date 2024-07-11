@@ -5,15 +5,17 @@ import {context} from '../models';
 
 export function CheckIsServerRunning():Promise<boolean>;
 
-export function GitHeadCommit(arg1:string):Promise<object.Commit>;
+export function GitHeadCommit():Promise<object.Commit>;
 
-export function GitLatestCommit(arg1:string):Promise<void>;
+export function GitLatestCommit():Promise<void>;
 
-export function GitPull(arg1:string):Promise<string>;
+export function GitPull():Promise<string>;
 
-export function GitStatus(arg1:string):Promise<Array<object.Commit>>;
+export function GitStatus():Promise<Array<object.Commit>>;
 
-export function StartServer(arg1:string):Promise<boolean>;
+export function Shutdown():Promise<void>;
+
+export function StartServer():Promise<boolean>;
 
 export function StartUp(arg1:context.Context):Promise<void>;
 

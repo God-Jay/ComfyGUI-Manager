@@ -1,6 +1,7 @@
 package comfyUI
 
 import (
+	"comfygui-manager/backend/store"
 	"fmt"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
@@ -11,8 +12,8 @@ import (
 	"os/exec"
 )
 
-func (c *ComfyUI) GitHeadCommit(comfyUIPath string) *object.Commit {
-	repo, err := git.PlainOpen(comfyUIPath)
+func (c *ComfyUI) GitHeadCommit() *object.Commit {
+	repo, err := git.PlainOpen(store.ComfyUIPath)
 	if err != nil {
 		return nil
 	}
@@ -27,8 +28,8 @@ func (c *ComfyUI) GitHeadCommit(comfyUIPath string) *object.Commit {
 	return commit
 }
 
-func (c *ComfyUI) GitLatestCommit(comfyUIPath string) error {
-	repo, err := git.PlainOpen(comfyUIPath)
+func (c *ComfyUI) GitLatestCommit() error {
+	repo, err := git.PlainOpen(store.ComfyUIPath)
 	if err != nil {
 		return err
 	}
@@ -57,18 +58,18 @@ func (c *ComfyUI) GitLatestCommit(comfyUIPath string) error {
 	return err
 }
 
-func (c *ComfyUI) GitPull(comfyUIPath string) string {
+func (c *ComfyUI) GitPull() string {
 	cmd := exec.Command("git", "pull")
-	cmd.Dir = comfyUIPath
+	cmd.Dir = store.ComfyUIPath
 	output, err := cmd.CombinedOutput()
 	log.Println(err)
 	return string(output)
 }
 
-func (c *ComfyUI) GitStatus(comfyUIPath string) []*object.Commit {
+func (c *ComfyUI) GitStatus() []*object.Commit {
 	behindCommits := make([]*object.Commit, 0)
 
-	repo, err := git.PlainOpen(comfyUIPath)
+	repo, err := git.PlainOpen(store.ComfyUIPath)
 	if err != nil {
 		fmt.Printf("无法打开仓库: %v\n", err)
 		return nil

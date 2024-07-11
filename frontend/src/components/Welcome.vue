@@ -1,28 +1,26 @@
 <script setup>
-import {SelectFolder} from "@wailsjs/go/main/App.js";
-import {ListModelDir} from '@wailsjs/go/models/Service'
-import {useModelStore} from "@/stores/model.js";
+import {ref} from "vue";
+import {SelectFolder, SetComfyUIPath} from "@wailsjs/go/backend/App.js";
 import {useMainStore} from "@/stores/store.js";
 
 
 const mainStore = useMainStore()
-const modelStore = useModelStore()
+
+const selectedComfyUIPath = ref('')
 
 async function selectFolder() {
   try {
-    const folder = await SelectFolder('Select ComfyUI folder');
-    console.log("selectFolder", folder)
-    mainStore.setComfyUIPath(folder);
+    selectedComfyUIPath.value = await SelectFolder('Select ComfyUI folder');
+    console.log("selectFolder", selectedComfyUIPath)
   } catch (error) {
-    console.error('SelectFolder error', error);
+    console.error('SelectFolder error', error)
   }
 }
 
 async function start() {
-  const modelDir = await ListModelDir(mainStore.comfyUIPath)
+  await SetComfyUIPath(selectedComfyUIPath.value)
 
-  mainStore.setWelcome(false)
-  modelStore.setModelDir(modelDir)
+  mainStore.setComfyUIPath(selectedComfyUIPath.value)
 }
 
 </script>
@@ -35,7 +33,7 @@ async function start() {
         <v-row justify="center">
           <v-text-field
               width="400"
-              v-model="mainStore.comfyUIPath"
+              v-model="selectedComfyUIPath"
               label="ComfyUI folder"
               variant="solo-filled"
               disabled

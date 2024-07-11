@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted, onUnmounted, ref} from "vue";
-import {Prompt, SaveFile} from "@wailsjs/go/main/App.js";
+import {Prompt, SaveFile} from "@wailsjs/go/backend/App.js";
 import {useMainStore} from "@/stores/store.js";
 
 const snackbar = ref(false)

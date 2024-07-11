@@ -1,8 +1,9 @@
 package main
 
 import (
-	"comfygui-manager/comfyUI"
-	"comfygui-manager/models"
+	"comfygui-manager/backend"
+	"comfygui-manager/backend/comfyUI"
+	"comfygui-manager/backend/models"
 	"context"
 	"embed"
 	"github.com/wailsapp/wails/v2"
@@ -14,9 +15,10 @@ import (
 var assets embed.FS
 
 func main() {
-	app := NewApp()
+	app := backend.NewApp()
 
 	comfy := comfyUI.NewComfyUI()
+	defer comfy.Shutdown()
 
 	modelSrv := models.NewService()
 
@@ -32,7 +34,7 @@ func main() {
 		},
 		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
 		OnStartup: func(ctx context.Context) {
-			app.startup(ctx)
+			app.Startup(ctx)
 			comfy.StartUp(ctx)
 			modelSrv.StartUp(ctx)
 		},

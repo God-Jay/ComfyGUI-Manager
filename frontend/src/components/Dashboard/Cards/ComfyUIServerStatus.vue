@@ -30,7 +30,7 @@ getIsServerRunning()
 
 const startServer = () => {
   serverStatus.value = serverStatusEnums.Starting
-  StartServer(useMainStore().comfyUIPath).then(r => {
+  StartServer().then(r => {
     getIsServerRunning()
   })
 }

@@ -5,6 +5,6 @@ import {context} from '../models';
 
 export function GetModelFileSHA256(arg1:string):Promise<string>;
 
-export function ListModelDir(arg1:string):Promise<models.Dir>;
+export function ListModelDir():Promise<models.Dir>;
 
 export function StartUp(arg1:context.Context):Promise<void>;
