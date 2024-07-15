@@ -36,7 +36,7 @@ const logout = () => {
 
     <v-btn v-if="false"
            variant="elevated" size="small" class="ml-2" :color="inactiveButtonClass" @click="workspaceNum++">
-      <v-icon icon="mdi-plus"></v-icon>
+      <v-icon>mdi-plus</v-icon>
     </v-btn>
 
 

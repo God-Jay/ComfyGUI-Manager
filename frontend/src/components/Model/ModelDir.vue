@@ -166,7 +166,7 @@ function openCivitai(url) {
       </div>
       <div class="text-center" v-else>
         <v-progress-circular v-if="!failure" color="primary" indeterminate></v-progress-circular>
-        <v-icon v-if="failure" icon="mdi-alert" color="red" size="32"></v-icon>
+        <v-icon v-if="failure" color="red" size="32">mdi-alert</v-icon>
         <div class="text-subtitle-2 text-capitalize">{{ state }}</div>
       </div>
       <template v-slot:actions>

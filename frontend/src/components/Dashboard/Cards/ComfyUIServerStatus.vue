@@ -65,7 +65,10 @@ const stopServer = () => {
 
           <template v-if="serverStatus === serverStatusEnums.Running">
             <v-card-text>
-              <p class="text-success">Server Now Running</p>
+              <p class="text-success">
+                <v-icon color="green" class="mr-1 mb-1">mdi-check-circle</v-icon>
+                Server Now Running
+              </p>
             </v-card-text>
             <v-card-actions style="position: absolute; bottom: 0">
               <v-btn border color="red" @click.stop="stopServer" class="ml-1">
@@ -76,7 +79,10 @@ const stopServer = () => {
 
           <template v-if="serverStatus === serverStatusEnums.Stopped">
             <v-card-text>
-              <p class="text-red">Server is Not Running</p>
+              <p class="text-red">
+                <v-icon color="red" class="mr-1 mb-1">mdi-alert</v-icon>
+                Server is Not Running
+              </p>
             </v-card-text>
             <v-card-actions style="position: absolute; bottom: 0">
               <v-btn border color="success" @click.stop="startServer" class="ml-1">
@@ -90,6 +96,7 @@ const stopServer = () => {
               <v-progress-circular
                   color="green"
                   indeterminate
+                  class="mb-1"
               ></v-progress-circular>
               <span class="ml-4">Starting...</span>
             </v-card-text>
@@ -100,6 +107,7 @@ const stopServer = () => {
               <v-progress-circular
                   color="red"
                   indeterminate
+                  class="mb-1"
               ></v-progress-circular>
               <span class="ml-4">Stopping...</span>
             </v-card-text>
