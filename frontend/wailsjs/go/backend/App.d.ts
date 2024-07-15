@@ -6,6 +6,8 @@ export function Confirm(arg1:string,arg2:string):Promise<string>;
 
 export function GetComfyUIPath():Promise<string>;
 
+export function OpenFolder():Promise<void>;
+
 export function Prompt(arg1:string,arg2:string):Promise<string>;
 
 export function SaveFile(arg1:string,arg2:string):Promise<void>;

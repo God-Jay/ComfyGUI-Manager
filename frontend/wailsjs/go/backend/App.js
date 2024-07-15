@@ -10,6 +10,10 @@ export function GetComfyUIPath() {
   return window['go']['backend']['App']['GetComfyUIPath']();
 }
 
+export function OpenFolder() {
+  return window['go']['backend']['App']['OpenFolder']();
+}
+
 export function Prompt(arg1, arg2) {
   return window['go']['backend']['App']['Prompt'](arg1, arg2);
 }

@@ -4,6 +4,7 @@ import Model from "@/components/Model/Model.vue";
 import Dashboard from "@/components/Dashboard/Dashboard.vue";
 import CustomNodes from "@/components/CustomNodes/CustomNodes.vue";
 import {ListModelDir} from "@wailsjs/go/models/Service.js";
+import {OpenFolder} from "@wailsjs/go/backend/App.js";
 import {useMainStore} from "@/stores/store.js";
 import {useModelStore} from "@/stores/model.js";
 
@@ -17,13 +18,26 @@ async function getModels() {
 
 getModels()
 
+const openFolder = () => {
+  OpenFolder()
+}
+
 </script>
 
 <template>
 
   <LeftList/>
 
-  <v-footer app>ComfyUI Path: {{ mainStore.comfyUIPath }}</v-footer>
+  <v-footer app>
+    <v-hover v-slot="{ isHovering, props }">
+      <p @click="openFolder"
+         v-bind="props"
+         style="cursor: pointer"
+         :class="isHovering ? 'text-primary' : 'text-secondary'">
+        ComfyUI Path: {{ mainStore.comfyUIPath }}
+      </p>
+    </v-hover>
+  </v-footer>
 
   <Dashboard v-if="mainStore.mainNav === 'dashboard'"/>
 

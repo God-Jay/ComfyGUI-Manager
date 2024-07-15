@@ -6,6 +6,8 @@ import (
 	"context"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"os"
+	"os/exec"
+	goruntime "runtime"
 )
 
 // App struct
@@ -45,6 +47,19 @@ func (a *App) SelectFolder(title string) string {
 		return ""
 	}
 	return selection
+}
+
+func (a *App) OpenFolder() error {
+	var cmd *exec.Cmd
+	switch goruntime.GOOS {
+	case "windows":
+		cmd = exec.Command("explorer", store.ComfyUIPath)
+	case "darwin":
+		cmd = exec.Command("open", store.ComfyUIPath)
+	default:
+		cmd = exec.Command("xdg-open", store.ComfyUIPath)
+	}
+	return cmd.Start()
 }
 
 func (a *App) Prompt(defaultFileName, title string) string {
