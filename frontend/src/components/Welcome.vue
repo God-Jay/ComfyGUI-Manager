@@ -3,7 +3,6 @@ import {ref} from "vue";
 import {SelectFolder, SetComfyUIPath} from "@wailsjs/go/backend/App.js";
 import {useMainStore} from "@/stores/store.js";
 
-
 const mainStore = useMainStore()
 
 const selectedComfyUIPath = ref('')
@@ -19,7 +18,6 @@ async function selectFolder() {
 
 async function start() {
   await SetComfyUIPath(selectedComfyUIPath.value)
-
   mainStore.setComfyUIPath(selectedComfyUIPath.value)
 }
 
@@ -43,7 +41,7 @@ async function start() {
           <v-btn @click="selectFolder" color="success">Open ComfyUI folder</v-btn>
         </v-row>
         <v-row justify="center" class="mt-6">
-          <v-btn @click="start" color="primary">Start</v-btn>
+          <v-btn @click="start" color="primary" :disabled="selectedComfyUIPath === ''">Start</v-btn>
         </v-row>
       </v-col>
     </v-row>
