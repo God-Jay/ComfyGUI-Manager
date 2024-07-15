@@ -104,6 +104,7 @@ function openCivitai(url) {
 
   <!--  model popup-->
   <v-dialog
+      attach="true"
       v-model="dialog"
       width="auto"
   >

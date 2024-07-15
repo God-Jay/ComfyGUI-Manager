@@ -15,10 +15,10 @@ import (
 var assets embed.FS
 
 func main() {
-	app := backend.NewApp()
-
 	comfy := comfyUI.NewComfyUI()
 	defer comfy.Shutdown()
+
+	app := backend.NewApp(comfy)
 
 	modelSrv := models.NewService()
 

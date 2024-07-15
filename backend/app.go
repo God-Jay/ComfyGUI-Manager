@@ -10,12 +10,15 @@ import (
 
 // App struct
 type App struct {
-	ctx context.Context
+	ctx   context.Context
+	comfy *comfyUI.ComfyUI
 }
 
 // NewApp creates a new App application struct
-func NewApp() *App {
-	return &App{}
+func NewApp(comfyUI *comfyUI.ComfyUI) *App {
+	return &App{
+		comfy: comfyUI,
+	}
 }
 
 // Startup is called when the app starts. The context is saved
@@ -30,6 +33,7 @@ func (a *App) GetComfyUIPath() string {
 }
 
 func (a *App) SetComfyUIPath(comfyUIPath string) error {
+	a.comfy.Shutdown()
 	return store.SetComfyUIPath(comfyUIPath)
 }
 

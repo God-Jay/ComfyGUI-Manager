@@ -3,6 +3,9 @@ import {onMounted, onUnmounted, ref} from "vue";
 import {Prompt, SaveFile} from "@wailsjs/go/backend/App.js";
 import {useMainStore} from "@/stores/store.js";
 
+const appButton = defineModel('appButton')
+defineProps(['workspaceIndex'])
+
 const snackbar = ref(false)
 const timeout = 3000
 
@@ -34,31 +37,35 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <template v-if="useMainStore().serverIsRunning">
-    <iframe src="http://127.0.0.1:8189" class="comfy-screen"></iframe>
-  </template>
+  <div v-show="appButton === workspaceIndex">
 
-  <template v-else>
-    Server is not running, you should start server first.
-  </template>
-
-  <v-snackbar
-      location="top"
-      color="primary"
-      v-model="snackbar"
-      :timeout="timeout"
-  >
-    Save Workflow Success
-    <template v-slot:actions>
-      <v-btn
-          color="green"
-          variant="text"
-          @click="snackbar = false"
-      >
-        Close
-      </v-btn>
+    <template v-if="useMainStore().serverIsRunning">
+      <iframe src="http://127.0.0.1:8189" class="comfy-screen"></iframe>
     </template>
-  </v-snackbar>
+
+    <template v-else>
+      Server is not running, you should start server first.
+    </template>
+
+    <v-snackbar
+        location="top"
+        color="primary"
+        v-model="snackbar"
+        :timeout="timeout"
+    >
+      Save Workflow Success
+      <template v-slot:actions>
+        <v-btn
+            color="green"
+            variant="text"
+            @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
+  </div>
 </template>
 
 <style scoped>

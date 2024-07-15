@@ -31,16 +31,18 @@ getComfyUIPath()
       </template>
 
       <template v-else>
-        <AppBar v-model:appButton="appButton" v-model:workspaceNum="workspaceNum"/>
+        <AppBar v-model:appButton="appButton" v-model:workspaceNum="workspaceNum" style="z-index: 9999"/>
 
         <!--      Main-->
-        <template v-if="appButton === -1">
-          <Main/>
-        </template>
+        <KeepAlive>
+          <Main v-if="appButton === -1"/>
+        </KeepAlive>
 
         <!--      Workspace-->
         <template v-for="i in workspaceNum">
-          <ComfyUI v-if="appButton === i"/>
+          <KeepAlive>
+            <ComfyUI v-model:appButton="appButton" :workspaceIndex="i"/>
+          </KeepAlive>
         </template>
       </template>
 
