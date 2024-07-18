@@ -8,6 +8,7 @@ require (
 	github.com/dgraph-io/badger/v4 v4.2.0
 	github.com/go-git/go-git/v5 v5.12.0
 	github.com/gorilla/websocket v1.5.3
+	github.com/vrischmann/userdir v0.0.0-20151206171402-20f291cebd68
 	github.com/wailsapp/wails/v2 v2.9.1
 )
 

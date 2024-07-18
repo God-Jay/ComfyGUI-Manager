@@ -3,14 +3,16 @@ package store
 import (
 	"encoding/json"
 	"github.com/dgraph-io/badger/v4"
+	"github.com/vrischmann/userdir"
 	"log"
+	"path"
 )
 
 //var db *badger.DB
 
 func getDb() *badger.DB {
 	//var err error
-	db, err := badger.Open(badger.DefaultOptions("./comfygui-manager-db").WithValueLogFileSize(1 << 26))
+	db, err := badger.Open(badger.DefaultOptions(path.Join(userdir.GetDataHome(), "./comfygui.manager.db")).WithValueLogFileSize(1 << 26))
 	if err != nil {
 		log.Fatal(err)
 	}
