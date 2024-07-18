@@ -1,0 +1,65 @@
+name: Build and Release Mac App
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  build_and_release:
+    runs-on: macos-latest
+
+    strategy:
+      matrix:
+        arch:
+          - amd64
+          - arm64
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+
+      - name: Install Wails
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm install
+
+      - name: Build
+        env:
+          GOOS: darwin
+          GOARCH: ${{ matrix.arch }}
+        run: |
+          wails build -platform darwin/${{ matrix.arch }}
+
+      - name: Install create-dmg
+        run: brew install create-dmg
+
+      - name: Create DMG
+        run: |
+          create-dmg \
+          --volname "ComfyGUI Manager-${{ matrix.arch }}" \
+          --window-pos 200 120 \
+          --window-size 800 400 \
+          --icon-size 100 \
+          --app-drop-link 600 185 \
+          "ComfyGUI Manager-${{ matrix.arch }}.dmg" \
+          "build/bin/ComfyGUI Manager.app"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ComfyGUI Manager-${{ matrix.arch }}.dmg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
