@@ -37,7 +37,7 @@ const startServer = () => {
 
 const stopServer = () => {
   serverStatus.value = serverStatusEnums.Stopping
-  StopServer(useMainStore().comfyUIPath).then(r => {
+  StopServer().then(r => {
     if (!r) {
       snackbar.value = true
     }

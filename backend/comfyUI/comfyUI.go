@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"os"
 	"os/exec"
 	"time"
 )
@@ -26,7 +25,7 @@ func (c *ComfyUI) StartUp(ctx context.Context) {
 
 func (c *ComfyUI) Shutdown() {
 	if c.cmd != nil {
-		c.cmd.Process.Signal(os.Interrupt)
+		stopCmd(c.cmd)
 	}
 }
 
@@ -39,13 +38,15 @@ func (c *ComfyUI) StartServer() bool {
 	cmd := exec.Command("python", "main.py", "--force-upcast-attention")
 	cmd.Dir = store.ComfyUIPath
 
+	hideWindow(cmd)
+
 	log.Println(cmd.String())
 	err := cmd.Start()
 	if err != nil {
 		log.Println("start server err", err)
 		return false
 	}
-	for i := 0; i < 30; i++ {
+	for i := 0; i < 120; i++ {
 		time.Sleep(time.Second)
 		if isPortInUse(8188) {
 			c.cmd = cmd
@@ -63,7 +64,7 @@ func (c *ComfyUI) StopServer() bool {
 		return false
 	}
 
-	err := c.cmd.Process.Signal(os.Interrupt)
+	err := stopCmd(c.cmd)
 	if err != nil {
 		log.Println("stop server err", err)
 		return false
