@@ -1,6 +1,6 @@
 <script setup>
 import Fps from "@/Fps.vue";
-import {SetComfyUIPath} from "@wailsjs/go/backend/App.js";
+import {Logout} from "@wailsjs/go/backend/App.js";
 import {useMainStore} from "@/stores/store.js";
 
 const mainStore = useMainStore()
@@ -12,7 +12,7 @@ const appButton = defineModel('appButton')
 const workspaceNum = defineModel('workspaceNum')
 
 const logout = () => {
-  SetComfyUIPath('')
+  Logout()
   mainStore.setComfyUIPath('')
 }
 </script>

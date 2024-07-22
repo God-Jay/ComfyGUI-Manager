@@ -10,6 +10,10 @@ export function GetComfyUIPath() {
   return window['go']['backend']['App']['GetComfyUIPath']();
 }
 
+export function Logout() {
+  return window['go']['backend']['App']['Logout']();
+}
+
 export function OpenFolder() {
   return window['go']['backend']['App']['OpenFolder']();
 }

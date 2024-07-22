@@ -39,6 +39,10 @@ func (a *App) SetComfyUIPath(comfyUIPath string) error {
 	return store.SetComfyUIPath(comfyUIPath)
 }
 
+func (a *App) Logout() error {
+	return a.SetComfyUIPath("")
+}
+
 func (a *App) SelectFolder(title string) string {
 	selection, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
 		Title: title,
