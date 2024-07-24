@@ -10,6 +10,10 @@ export function GetComfyUIPath() {
   return window['go']['backend']['App']['GetComfyUIPath']();
 }
 
+export function Login(arg1) {
+  return window['go']['backend']['App']['Login'](arg1);
+}
+
 export function Logout() {
   return window['go']['backend']['App']['Logout']();
 }
@@ -28,10 +32,6 @@ export function SaveFile(arg1, arg2) {
 
 export function SelectFolder(arg1) {
   return window['go']['backend']['App']['SelectFolder'](arg1);
-}
-
-export function SetComfyUIPath(arg1) {
-  return window['go']['backend']['App']['SetComfyUIPath'](arg1);
 }
 
 export function Startup(arg1) {

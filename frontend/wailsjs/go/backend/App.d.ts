@@ -6,6 +6,8 @@ export function Confirm(arg1:string,arg2:string):Promise<string>;
 
 export function GetComfyUIPath():Promise<string>;
 
+export function Login(arg1:string):Promise<void>;
+
 export function Logout():Promise<void>;
 
 export function OpenFolder():Promise<void>;
@@ -15,7 +17,5 @@ export function Prompt(arg1:string,arg2:string):Promise<string>;
 export function SaveFile(arg1:string,arg2:string):Promise<void>;
 
 export function SelectFolder(arg1:string):Promise<string>;
-
-export function SetComfyUIPath(arg1:string):Promise<void>;
 
 export function Startup(arg1:context.Context):Promise<void>;

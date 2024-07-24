@@ -1,6 +1,6 @@
 <script setup>
 import {ref} from "vue";
-import {SelectFolder, SetComfyUIPath} from "@wailsjs/go/backend/App.js";
+import {Login, SelectFolder} from "@wailsjs/go/backend/App.js";
 import {useMainStore} from "@/stores/store.js";
 
 const mainStore = useMainStore()
@@ -17,7 +17,7 @@ async function selectFolder() {
 }
 
 async function start() {
-  await SetComfyUIPath(selectedComfyUIPath.value)
+  await Login(selectedComfyUIPath.value)
   mainStore.setComfyUIPath(selectedComfyUIPath.value)
 }
 

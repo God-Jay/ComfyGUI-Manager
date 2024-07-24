@@ -93,8 +93,9 @@ function openCivitai(url) {
                 :src="modelImg"
                 cover
             ></v-img>
-            <v-card-text class="text-center">{{ file.name }}
-              <br>{{ file.size }}
+            <v-card-text class="text-center">
+              <p>{{ file.name }}</p>
+              <p>{{ file.size }}</p>
             </v-card-text>
           </v-card>
         </v-col>

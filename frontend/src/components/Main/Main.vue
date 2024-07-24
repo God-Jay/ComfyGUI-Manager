@@ -1,6 +1,7 @@
 <script setup>
 import LeftList from "@/components/Main/LeftList.vue";
 import Model from "@/components/Model/Model.vue";
+import Output from "@/components/Output/Output.vue";
 import Dashboard from "@/components/Dashboard/Dashboard.vue";
 import CustomNodes from "@/components/CustomNodes/CustomNodes.vue";
 import {ListModelDir} from "@wailsjs/go/models/Service.js";
@@ -42,6 +43,8 @@ const openFolder = () => {
   <Dashboard v-if="mainStore.mainNav === 'dashboard'"/>
 
   <Model v-if="mainStore.mainNav === 'models'"/>
+
+  <Output v-if="mainStore.mainNav === 'output'"/>
 
   <CustomNodes v-if="mainStore.mainNav === 'custom_nodes'"/>
 

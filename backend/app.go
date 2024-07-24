@@ -2,6 +2,7 @@ package backend
 
 import (
 	"comfygui-manager/backend/comfyUI"
+	"comfygui-manager/backend/output"
 	"comfygui-manager/backend/store"
 	"context"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -12,14 +13,16 @@ import (
 
 // App struct
 type App struct {
-	ctx   context.Context
-	comfy *comfyUI.ComfyUI
+	ctx    context.Context
+	comfy  *comfyUI.ComfyUI
+	output *output.Output
 }
 
 // NewApp creates a new App application struct
-func NewApp(comfyUI *comfyUI.ComfyUI) *App {
+func NewApp(comfyUI *comfyUI.ComfyUI, op *output.Output) *App {
 	return &App{
-		comfy: comfyUI,
+		comfy:  comfyUI,
+		output: op,
 	}
 }
 
@@ -28,19 +31,27 @@ func NewApp(comfyUI *comfyUI.ComfyUI) *App {
 func (a *App) Startup(ctx context.Context) {
 	a.ctx = ctx
 	comfyUI.RunProxy()
+	a.output.StartImageServer()
 }
 
 func (a *App) GetComfyUIPath() string {
 	return store.ComfyUIPath
 }
 
-func (a *App) SetComfyUIPath(comfyUIPath string) error {
+func (a *App) setComfyUIPath(comfyUIPath string) error {
 	a.comfy.Shutdown()
+	a.output.StopImageServer()
 	return store.SetComfyUIPath(comfyUIPath)
 }
 
+func (a *App) Login(comfyUIPath string) error {
+	err := a.setComfyUIPath(comfyUIPath)
+	a.output.StartImageServer()
+	return err
+}
+
 func (a *App) Logout() error {
-	return a.SetComfyUIPath("")
+	return a.setComfyUIPath("")
 }
 
 func (a *App) SelectFolder(title string) string {

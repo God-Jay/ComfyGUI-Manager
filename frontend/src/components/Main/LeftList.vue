@@ -28,6 +28,10 @@ const changeMainNav = (nav) => {
                    @click.stop="changeMainNav('models')"
                    :active="mainStore.mainNav === 'models'"></v-list-item>
 
+      <v-list-item prepend-icon="mdi-image-multiple-outline" value="messages"
+                   @click.stop="changeMainNav('output')"
+                   :active="mainStore.mainNav === 'output'"></v-list-item>
+
       <v-list-item prepend-icon="mdi-resistor-nodes" value="messages"
                    @click.stop="changeMainNav('custom_nodes')"
                    :active="mainStore.mainNav === 'custom_nodes'"></v-list-item>

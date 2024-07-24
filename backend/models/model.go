@@ -2,6 +2,7 @@ package models
 
 import (
 	"comfygui-manager/backend/store"
+	"comfygui-manager/backend/util"
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
@@ -30,7 +31,7 @@ func (f File) MarshalJSON() ([]byte, error) {
 		HumanReadableSize string `json:"size"`
 	}{
 		Alias:             (Alias)(f),
-		HumanReadableSize: humanReadableSize(f.Size),
+		HumanReadableSize: util.HumanReadableSize(f.Size),
 	})
 }
 
@@ -52,7 +53,7 @@ func (d Dir) MarshalJSON() ([]byte, error) {
 		HumanReadableTotalFileSize string `json:"totalFileSize"`
 	}{
 		Alias:                      (Alias)(d),
-		HumanReadableTotalFileSize: humanReadableSize(d.TotalFileSize),
+		HumanReadableTotalFileSize: util.HumanReadableSize(d.TotalFileSize),
 	})
 }
 
@@ -85,7 +86,7 @@ func listDir(s *Service, modelDir string) *Dir {
 			dirMap[path] = &newDir
 		} else {
 			info, _ := d.Info()
-			if info.Size() < 10*MB {
+			if info.Size() < 10*util.MB {
 				return nil
 			}
 
@@ -156,46 +157,4 @@ func getFileSHA256(s *Service, filePath string) string {
 	s.setDbFile(dbFile)
 
 	return hashString
-}
-
-const (
-	_  = iota
-	KB = 1 << (10 * iota)
-	MB
-	GB
-	TB
-	PB
-	EB
-)
-
-func humanReadableSize(size int64) string {
-
-	var unit string
-	var value float64
-
-	switch {
-	case size >= EB:
-		unit = "EB"
-		value = float64(size) / EB
-	case size >= PB:
-		unit = "PB"
-		value = float64(size) / PB
-	case size >= TB:
-		unit = "TB"
-		value = float64(size) / TB
-	case size >= GB:
-		unit = "GB"
-		value = float64(size) / GB
-	case size >= MB:
-		unit = "MB"
-		value = float64(size) / MB
-	case size >= KB:
-		unit = "KB"
-		value = float64(size) / KB
-	default:
-		unit = "bytes"
-		value = float64(size)
-	}
-
-	return fmt.Sprintf("%.2f %s", value, unit)
 }

@@ -50,7 +50,10 @@ const clickCard = (dir) => {
                     :src="folderImg"
                     cover
                 ></v-img>
-                <v-card-text class="text-center pt-0 pb-2">{{ dir.name }}<br>{{ dir.totalFileSize }}</v-card-text>
+                <v-card-text class="text-center pt-0 pb-2">
+                  <p>{{ dir.name }}</p>
+                  <p>{{ dir.totalFileSize }}</p>
+                </v-card-text>
               </v-card>
             </template>
           </v-tooltip>
