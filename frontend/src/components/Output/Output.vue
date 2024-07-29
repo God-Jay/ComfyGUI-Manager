@@ -3,7 +3,7 @@ import {ref} from "vue";
 import {GetImages} from "@wailsjs/go/output/Output.js";
 import moment from "moment";
 
-const images = ref()
+const images = ref([])
 
 const getImages = () => {
   GetImages().then(r => {
@@ -21,7 +21,7 @@ getImages()
       min-width="860"
   >
     <v-container fluid>
-      <v-row dense>
+      <v-row dense v-if="images.length !== 0">
         <v-col
             v-for="(imageFile, i) in images"
             :key="i"
@@ -46,6 +46,10 @@ getImages()
           </v-card>
         </v-col>
       </v-row>
+      <!--TODO-->
+      <template v-else>
+        no output
+      </template>
     </v-container>
   </v-card>
 
