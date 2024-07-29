@@ -62,8 +62,8 @@ func (c *ComfyUI) StartServer() bool {
 			return true
 		}
 	}
-	cmd.Process.Kill()
-	log.Println("start server timeout after 30s")
+	stopCmd(cmd)
+	log.Println("start server timeout after 120s")
 	return false
 }
 

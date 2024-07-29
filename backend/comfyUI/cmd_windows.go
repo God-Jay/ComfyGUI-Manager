@@ -16,5 +16,10 @@ func hideWindow(cmd *exec.Cmd) {
 
 // TODO ctrl+c ?
 func stopCmd(cmd *exec.Cmd) error {
-	return cmd.Process.Kill()
+	var err error
+	err = cmd.Process.Kill()
+	if err != nil {
+		return err
+	}
+	return cmd.Wait()
 }
