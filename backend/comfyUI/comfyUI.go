@@ -2,6 +2,7 @@ package comfyUI
 
 import (
 	"comfygui-manager/backend/store"
+	"comfygui-manager/backend/util"
 	"context"
 	"fmt"
 	"log"
@@ -34,8 +35,16 @@ func (c *ComfyUI) CheckIsServerRunning() bool {
 }
 
 func (c *ComfyUI) StartServer() bool {
-	// TODO delete args
-	cmd := exec.Command("python", "main.py", "--force-upcast-attention")
+	// TODO change args
+	cmd := exec.Command("python", "main.py")
+
+	switch util.GetGpu() {
+	case util.APPLE:
+		cmd.Args = append(cmd.Args, "--force-upcast-attention")
+	case util.AMD:
+		cmd.Args = append(cmd.Args, "--directml")
+	}
+
 	cmd.Dir = store.ComfyUIPath
 
 	hideWindow(cmd)
