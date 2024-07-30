@@ -1,6 +1,6 @@
 <script setup>
 import {ref} from "vue";
-import {GetImages} from "@wailsjs/go/output/Output.js";
+import {GetImages, GetImageWorkflow} from "@wailsjs/go/output/Output.js";
 import moment from "moment";
 
 const images = ref([])
@@ -11,6 +11,20 @@ const getImages = () => {
   })
 }
 getImages()
+
+const dialog = ref(false)
+const clickFile = ref()
+const workflow = ref('')
+const viewWorkflow = (outputFile) => {
+  GetImageWorkflow(outputFile.name).then(r => {
+    if (r === '') {
+      r = 'No workflow found'
+    }
+    workflow.value = r
+    dialog.value = true
+    clickFile.value = outputFile
+  })
+}
 </script>
 
 <template>
@@ -35,10 +49,13 @@ getImages()
           >
             <!-- TODO port -->
             <v-img
-                :src="'http://localhost:8190/output/' + imageFile.name"
+                :src="'http://localhost:8190/output/'+imageFile.name"
                 cover
             ></v-img>
             <v-card-text class="text-center">
+              <v-btn color="success" size="small" class="mb-2" @click.stop="viewWorkflow(imageFile)">
+                view workflow
+              </v-btn>
               <p>{{ imageFile.name }}</p>
               <p>{{ imageFile.size }}</p>
               <p>{{ moment(imageFile.modTime).format('LLL') }}</p>
@@ -52,6 +69,32 @@ getImages()
       </template>
     </v-container>
   </v-card>
+
+  <v-dialog
+      v-model="dialog"
+      max-width="85%"
+  >
+    <v-card class="pa-1">
+      <div class="d-flex flex-no-wrap justify-space-between">
+        <div>
+          <v-card-title>
+            {{ clickFile.name }}
+          </v-card-title>
+          <v-card-text>
+            {{ workflow }}
+          </v-card-text>
+        </div>
+
+        <v-avatar
+            class="ma-3"
+            rounded="0"
+            size="125"
+        >
+          <v-img :src="'http://localhost:8190/output/'+clickFile.name"></v-img>
+        </v-avatar>
+      </div>
+    </v-card>
+  </v-dialog>
 
 </template>
 

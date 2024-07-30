@@ -37,3 +37,7 @@ export function StartUp(arg1) {
 export function StopServer() {
   return window['go']['comfyUI']['ComfyUI']['StopServer']();
 }
+
+export function StoreOutput(arg1, arg2) {
+  return window['go']['comfyUI']['ComfyUI']['StoreOutput'](arg1, arg2);
+}

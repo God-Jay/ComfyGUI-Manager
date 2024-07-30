@@ -30,7 +30,7 @@ func NewApp(comfyUI *comfyUI.ComfyUI, op *output.Output) *App {
 // so we can call the runtime methods
 func (a *App) Startup(ctx context.Context) {
 	a.ctx = ctx
-	comfyUI.RunProxy()
+	comfyUI.RunProxy(ctx)
 	a.output.StartImageServer()
 }
 

@@ -78,6 +78,11 @@ func (o *Output) GetImages() []ImageFile {
 	return images
 }
 
+func (o *Output) GetImageWorkflow(outputFile string) string {
+	workflow, _ := store.GetFromDb[string](util.GetOutputStorePath(outputFile))
+	return workflow
+}
+
 func (o *Output) StopImageServer() {
 	if o.serverStop != nil {
 		o.serverStop()

@@ -1,7 +1,11 @@
 <script setup>
 import {onMounted, onUnmounted, ref} from "vue";
 import {Prompt, SaveFile} from "@wailsjs/go/backend/App.js";
+import {EventsOn} from "@wailsjs/runtime/runtime.js";
+import {StoreOutput} from "@wailsjs/go/comfyUI/ComfyUI.js";
 import {useMainStore} from "@/stores/store.js";
+
+const iframeRef = ref()
 
 const appButton = defineModel('appButton')
 defineProps(['workspaceIndex'])
@@ -23,10 +27,21 @@ const handlePrompt = async (event) => {
       console.log("save fail", result)
     }
   }
+
   if (event.data.type === 'saveImg') {
     console.log("saveImg...", event.data)
   }
+
+  if (event.data.type === 'IFRAME_SAVE_OUTPUT') {
+    StoreOutput(event.data.value, outputFileName.value)
+  }
 };
+
+const outputFileName = ref('')
+EventsOn("OutputImageFile", (output) => {
+  outputFileName.value = output
+  iframeRef.value.contentWindow.postMessage({type: 'VUE_SAVE_OUTPUT'}, "*");
+})
 
 onMounted(() => {
   window.addEventListener('message', handlePrompt);
@@ -40,7 +55,7 @@ onUnmounted(() => {
   <div v-show="appButton === workspaceIndex">
 
     <template v-if="useMainStore().serverIsRunning">
-      <iframe src="http://127.0.0.1:8189" class="comfy-screen"></iframe>
+      <iframe ref="iframeRef" src="http://127.0.0.1:8189" class="comfy-screen"></iframe>
     </template>
 
     <template v-else>

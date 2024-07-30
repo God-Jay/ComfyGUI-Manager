@@ -57,6 +57,25 @@ func ChangeAppJs(r *http.Response, body []byte) {
 
 	js := strings.ReplaceAll(replaceJs(string(body)), replaceJs(toReplaceJs), replaceJs(newJs))
 
+	script := `
+window.addEventListener('message', function(event) {
+	if (event.data.type === 'VUE_SAVE_OUTPUT') {
+		app.graphToPrompt().then(p => {
+			const tempWorkflowJson = JSON.stringify(p.workflow, null, 2);
+			
+			window.parent.postMessage({
+				type: 'IFRAME_SAVE_OUTPUT',
+				value: tempWorkflowJson
+			}, event.origin);
+		}).catch(error => {
+			console.error("Error in graphToPrompt:", error);
+		});
+	}
+});
+`
+
+	js = js + script
+
 	r.Body = io.NopCloser(bytes.NewReader([]byte(js)))
 	r.ContentLength = int64(len([]byte(js)))
 	r.Header.Set("Content-Length", strconv.Itoa(len([]byte(js))))

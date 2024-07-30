@@ -2,7 +2,11 @@ package comfyUI
 
 import (
 	"comfygui-manager/backend/comfyUI/js_replace"
+	"context"
+	"encoding/json"
 	"github.com/gorilla/websocket"
+	"github.com/tidwall/gjson"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"io"
 	"log"
 	"net/http"
@@ -16,7 +20,7 @@ var (
 	wsUpgrader websocket.Upgrader
 )
 
-func RunProxy() {
+func RunProxy(ctx context.Context) {
 	proxy = newProxy()
 	wsUpgrader = websocket.Upgrader{
 		CheckOrigin: func(r *http.Request) bool {
@@ -25,7 +29,9 @@ func RunProxy() {
 	}
 	// 启动代理服务器
 	go func() {
-		http.HandleFunc("/", proxyHandler)
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			proxyHandler(ctx, w, r)
+		})
 		http.ListenAndServe(":8189", nil)
 	}()
 }
@@ -65,15 +71,15 @@ func newProxy() *httputil.ReverseProxy {
 	return proxy
 }
 
-func proxyHandler(w http.ResponseWriter, r *http.Request) {
+func proxyHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	if websocket.IsWebSocketUpgrade(r) {
-		handleWebSocket(w, r)
+		handleWebSocket(ctx, w, r)
 		return
 	}
 	proxy.ServeHTTP(w, r)
 }
 
-func handleWebSocket(w http.ResponseWriter, r *http.Request) {
+func handleWebSocket(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	targetURL := "ws://127.0.0.1:8188" + r.URL.Path
 	if r.URL.RawQuery != "" {
 		targetURL += "?" + r.URL.RawQuery
@@ -97,13 +103,13 @@ func handleWebSocket(w http.ResponseWriter, r *http.Request) {
 
 	// 双向转发WebSocket消息
 	errc := make(chan error, 2)
-	go proxyWebSocket(targetConn, clientConn, errc)
-	go proxyWebSocket(clientConn, targetConn, errc)
+	go proxyWebSocket(ctx, targetConn, clientConn, errc)
+	go proxyWebSocket(ctx, clientConn, targetConn, errc)
 
 	<-errc
 }
 
-func proxyWebSocket(dst, src *websocket.Conn, errc chan error) {
+func proxyWebSocket(ctx context.Context, dst, src *websocket.Conn, errc chan error) {
 	for {
 		messageType, message, err := src.ReadMessage()
 		if err != nil {
@@ -111,8 +117,15 @@ func proxyWebSocket(dst, src *websocket.Conn, errc chan error) {
 			return
 		}
 
-		// 在这里，您可以修改WebSocket消息
-		// 例如：message = modifyWebSocketMessage(message)
+		var wsMsg WSMessage
+		json.Unmarshal(message, &wsMsg)
+		if wsMsg.Type == "executed" {
+			log.Println("executed ....", string(message))
+			if outputFile := gjson.GetBytes(message, "data.output.images.0.filename"); outputFile.Exists() {
+				log.Println("send js events")
+				runtime.EventsEmit(ctx, "OutputImageFile", outputFile.String())
+			}
+		}
 
 		err = dst.WriteMessage(messageType, message)
 		if err != nil {
@@ -120,4 +133,10 @@ func proxyWebSocket(dst, src *websocket.Conn, errc chan error) {
 			return
 		}
 	}
+}
+
+type WSMessage struct {
+	Type     string `json:"type"`
+	Data     any    `json:"data,omitempty"`
+	PromptId string `json:"prompt_id"`
 }
