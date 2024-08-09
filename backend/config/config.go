@@ -1,10 +1,15 @@
 package config
 
 import (
-	"github.com/vrischmann/userdir"
 	"path"
+
+	"github.com/vrischmann/userdir"
 )
 
-func GetComfyGUIStorePath() string {
+func GetComfyGuiDataPath() string {
 	return path.Join(userdir.GetDataHome(), "ComfyGUI Manager")
+}
+
+func GetComfyGuiDBPath() string {
+	return path.Join(GetComfyGuiDataPath(), "comfygui.manager.db")
 }

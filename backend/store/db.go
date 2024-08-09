@@ -1,18 +1,19 @@
 package store
 
 import (
-	"comfygui-manager/backend/config"
 	"encoding/json"
-	"github.com/dgraph-io/badger/v4"
 	"log"
-	"path"
+
+	"github.com/dgraph-io/badger/v4"
+
+	"comfygui-manager/backend/config"
 )
 
 //var db *badger.DB
 
 func getDb() *badger.DB {
 	//var err error
-	db, err := badger.Open(badger.DefaultOptions(path.Join(config.GetComfyGUIStorePath(), "./comfygui.manager.db")).WithValueLogFileSize(1 << 26))
+	db, err := badger.Open(badger.DefaultOptions(config.GetComfyGuiDBPath()).WithValueLogFileSize(1 << 26))
 	if err != nil {
 		log.Fatal(err)
 	}
