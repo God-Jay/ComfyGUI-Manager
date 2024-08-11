@@ -62,7 +62,7 @@ window.addEventListener('message', function(event) {
 	if (event.data.type === 'VUE_SAVE_OUTPUT') {
 		app.graphToPrompt().then(p => {
 			const tempWorkflowJson = JSON.stringify(p.workflow, null, 2);
-			
+
 			window.parent.postMessage({
 				type: 'IFRAME_SAVE_OUTPUT',
 				value: tempWorkflowJson
@@ -70,6 +70,10 @@ window.addEventListener('message', function(event) {
 		}).catch(error => {
 			console.error("Error in graphToPrompt:", error);
 		});
+	}
+
+	if (event.data.type === 'LOAD_IMG_WORKFLOW') {
+		app.loadGraphData(JSON.parse(event.data.workflow), true, true, event.data.name)
 	}
 });
 `

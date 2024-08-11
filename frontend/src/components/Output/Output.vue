@@ -2,6 +2,8 @@
 import {ref} from "vue";
 import {GetImages, GetImageWorkflow} from "@wailsjs/go/output/Output.js";
 import moment from "moment";
+import {EventsEmit} from "@wailsjs/runtime/runtime.js";
+import {useMainStore} from "@/stores/store.js";
 
 const images = ref([])
 
@@ -12,7 +14,8 @@ const getImages = () => {
 }
 getImages()
 
-const dialog = ref(false)
+const workflowDetailDialog = ref(false)
+const loadConfirmDialog = ref(false)
 const clickFile = ref()
 const workflow = ref('')
 const viewWorkflow = (outputFile) => {
@@ -21,9 +24,14 @@ const viewWorkflow = (outputFile) => {
       r = 'No workflow found'
     }
     workflow.value = r
-    dialog.value = true
+    workflowDetailDialog.value = true
     clickFile.value = outputFile
   })
+}
+
+const loadWorkflow = (clickFile) => {
+  EventsEmit("LoadImgWorkflow", workflow.value, clickFile.name)
+  loadConfirmDialog.value = false
 }
 </script>
 
@@ -71,7 +79,9 @@ const viewWorkflow = (outputFile) => {
   </v-card>
 
   <v-dialog
-      v-model="dialog"
+      attach="true"
+      scroll-strategy="none"
+      v-model="workflowDetailDialog"
       max-width="85%"
   >
     <v-card class="pa-1">
@@ -85,14 +95,48 @@ const viewWorkflow = (outputFile) => {
           </v-card-text>
         </div>
 
-        <v-avatar
-            class="ma-3"
-            rounded="0"
-            size="125"
-        >
-          <v-img :src="'http://localhost:8190/output/'+clickFile.name"></v-img>
-        </v-avatar>
+        <div>
+          <v-avatar
+              class="ma-3"
+              rounded="0"
+              size="125"
+          >
+            <v-img :src="'http://localhost:8190/output/'+clickFile.name"></v-img>
+          </v-avatar>
+          <v-btn color="primary" @click="loadConfirmDialog = true">load workflow</v-btn>
+        </div>
       </div>
+    </v-card>
+  </v-dialog>
+
+  <v-dialog
+      attach="true"
+      scroll-strategy="none"
+      v-model="loadConfirmDialog"
+      width="auto"
+  >
+    <v-card
+        max-width="400"
+        prepend-icon="mdi-alert"
+        text="Your current workflow will be overwritten. Are you sure you want to load?"
+        title="load workflow"
+    >
+      <v-card-actions>
+        <v-btn
+            v-if="useMainStore().serverIsRunning"
+            color="red"
+            variant="flat"
+            @click="loadWorkflow(clickFile)"
+        >load
+        </v-btn>
+        <v-btn
+            v-else
+            color="red"
+            variant="flat"
+            disabled
+        >server is not running
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 

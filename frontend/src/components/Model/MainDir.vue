@@ -65,6 +65,7 @@ const clickCard = (dir) => {
 
   <v-dialog
       attach="true"
+      scroll-strategy="none"
       v-model="dialog"
       width="auto"
   >

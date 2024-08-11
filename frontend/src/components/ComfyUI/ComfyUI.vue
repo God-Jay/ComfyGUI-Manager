@@ -42,6 +42,9 @@ EventsOn("OutputImageFile", (output) => {
   outputFileName.value = output
   iframeRef.value.contentWindow.postMessage({type: 'VUE_SAVE_OUTPUT'}, "*");
 })
+EventsOn("LoadImgWorkflow", (workflow, name) => {
+  iframeRef.value.contentWindow.postMessage({type: 'LOAD_IMG_WORKFLOW', workflow: workflow, name: name}, "*");
+})
 
 onMounted(() => {
   window.addEventListener('message', handlePrompt);
