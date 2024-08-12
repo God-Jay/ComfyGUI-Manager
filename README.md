@@ -8,13 +8,18 @@ A comfyUI gui manager written in golang, wails, vue and vuetify.
 
 - comfyUI dashboard
     - [ ] view comfyUI info
-    - [ ] upgrade comfyUI
-    - [ ] start/stop comfyUI server
+    - [x] upgrade comfyUI
+    - [x] start/stop comfyUI server
     -
 - comfyUI models manage
     - [ ] download models
-    - [✓] view civitai model info
+    - [x] view civitai model info
     -
+- comfyUI outputs
+    - [x] view output images
+    - [x] view output image's workflow
+    - [x] load output image's workflow
+    - 
 - comfyUI nodes manage
     - [ ] download nodes
     -
