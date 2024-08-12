@@ -10,6 +10,8 @@ export function Login(arg1:string):Promise<void>;
 
 export function Logout():Promise<void>;
 
+export function OpenFileInDir(arg1:string,arg2:string):Promise<void>;
+
 export function OpenFolder():Promise<void>;
 
 export function Prompt(arg1:string,arg2:string):Promise<string>;

@@ -1,6 +1,7 @@
 <script setup>
 import {ref} from "vue";
 import {GetImages, GetImageWorkflow} from "@wailsjs/go/output/Output.js";
+import {OpenFileInDir} from "@wailsjs/go/backend/App.js";
 import moment from "moment";
 import {EventsEmit} from "@wailsjs/runtime/runtime.js";
 import {useMainStore} from "@/stores/store.js";
@@ -61,6 +62,7 @@ const loadWorkflow = (clickFile) => {
           >
             <!-- TODO port -->
             <v-img
+                @click="OpenFileInDir('output', imageFile.name)"
                 :src="'http://localhost:8190/output/'+imageFile.name"
                 cover
             ></v-img>

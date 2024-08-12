@@ -18,6 +18,10 @@ export function Logout() {
   return window['go']['backend']['App']['Logout']();
 }
 
+export function OpenFileInDir(arg1, arg2) {
+  return window['go']['backend']['App']['OpenFileInDir'](arg1, arg2);
+}
+
 export function OpenFolder() {
   return window['go']['backend']['App']['OpenFolder']();
 }
