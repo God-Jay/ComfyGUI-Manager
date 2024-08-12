@@ -17,11 +17,15 @@ getImages()
 const workflowDetailDialog = ref(false)
 const loadConfirmDialog = ref(false)
 const clickFile = ref()
+const hasWorkflow = ref(false)
 const workflow = ref('')
 const viewWorkflow = (outputFile) => {
   GetImageWorkflow(outputFile.name).then(r => {
     if (r === '') {
       r = 'No workflow found'
+      hasWorkflow.value = false
+    } else {
+      hasWorkflow.value = true
     }
     workflow.value = r
     workflowDetailDialog.value = true
@@ -103,7 +107,7 @@ const loadWorkflow = (clickFile) => {
           >
             <v-img :src="'http://localhost:8190/output/'+clickFile.name"></v-img>
           </v-avatar>
-          <v-btn color="primary" @click="loadConfirmDialog = true">load workflow</v-btn>
+          <v-btn color="primary" @click="loadConfirmDialog = true" :disabled="!hasWorkflow">load workflow</v-btn>
         </div>
       </div>
     </v-card>
