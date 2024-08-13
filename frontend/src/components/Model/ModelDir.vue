@@ -5,6 +5,7 @@ import {GetModelFileSHA256} from "@wailsjs/go/models/Service";
 import {BrowserOpenURL} from "@wailsjs/runtime/runtime.js";
 import {getCivitaiInfo} from "@/api/civitai.js";
 import {useModelStore} from "@/stores/model.js";
+import moment from "moment";
 
 const modelStore = useModelStore()
 
@@ -64,7 +65,16 @@ function openCivitai(url) {
   BrowserOpenURL(url)
 }
 
-
+const currentImgModel = ref(0)
+const snackbar = ref(false)
+const copyText = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text)
+    snackbar.value = true
+  } catch (err) {
+    console.error('Failed to copy text:', err)
+  }
+}
 </script>
 
 <template>
@@ -122,6 +132,9 @@ function openCivitai(url) {
             <v-chip label color="primary" class="ml-1 mr-4">{{ fileInfo.civitaiInfo.baseModel }}</v-chip>
             Type:
             <v-chip label color="primary" class="ml-1">{{ fileInfo.civitaiInfo.model.type }}</v-chip>
+            Published At:
+            <v-chip label color="primary" class="ml-1">{{ moment(fileInfo.civitaiInfo.publishedAt).format('LLL') }}
+            </v-chip>
           </v-card-subtitle>
 
           <v-card-text>
@@ -134,12 +147,34 @@ function openCivitai(url) {
                 target="_blank">View in Civitai
             </v-btn>
           </v-card-text>
+
+
+          <v-card color="grey"
+                  title="Prompt"
+                  class="ma-2" max-width="900">
+            <template v-slot:append>
+              <v-btn variant="plain" icon="mdi-content-copy" size="sm"
+                     @click="copyText(fileInfo.civitaiInfo.images[currentImgModel]?.meta?.prompt)"></v-btn>
+            </template>
+            <v-card-text>{{ fileInfo.civitaiInfo.images[currentImgModel]?.meta?.prompt }}</v-card-text>
+          </v-card>
+
+          <v-card color="grey"
+                  title="Negative Prompt"
+                  class="ma-2" max-width="900">
+            <template v-slot:append>
+              <v-btn variant="plain" icon="mdi-content-copy" size="sm"
+                     @click="copyText(fileInfo.civitaiInfo.images[currentImgModel]?.meta?.negativePrompt)"></v-btn>
+            </template>
+            <v-card-text>{{ fileInfo.civitaiInfo.images[currentImgModel]?.meta?.negativePrompt }}</v-card-text>
+          </v-card>
+
           <div v-html="fileInfo.civitaiInfo.description" class="pl-8" style="max-width: 600px"></div>
         </div>
 
         <!--        img carousel-->
         <div class="float-right mr-3" style="width: 400px">
-          <v-carousel hide-delimiters progress="success">
+          <v-carousel hide-delimiters progress="success" v-model="currentImgModel">
             <template v-for="(image, i) in fileInfo.civitaiInfo.images">
               <v-carousel-item>
                 <div class="d-flex justify-space-around align-center bg-grey-lighten-4">
@@ -213,7 +248,14 @@ function openCivitai(url) {
     </v-container>
   </v-overlay>
 
-
+  <v-snackbar
+      location="top"
+      color="primary"
+      v-model="snackbar"
+      timeout="1000"
+  >
+    copy success
+  </v-snackbar>
 </template>
 
 <style scoped>
