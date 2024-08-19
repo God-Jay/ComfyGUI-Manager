@@ -2,9 +2,6 @@ package js_replace
 
 import (
 	"bytes"
-	"io"
-	"net/http"
-	"strconv"
 )
 
 var appJsAppendScript = `
@@ -37,16 +34,11 @@ var appJsReplaceSaveImageScript = `
 						}
 `
 
-func ChangeAppJs(r *http.Response, body []byte) {
+func ChangeAppJs(body []byte) []byte {
 	found, toReplaceBlock := findToReplaceBlock(body, "...getCopyImageOption(img)")
-
 	if found {
 		body = bytes.ReplaceAll(body, toReplaceBlock, []byte(appJsReplaceSaveImageScript))
 	}
 
-	body = append(body, []byte(appJsAppendScript)...)
-
-	r.Body = io.NopCloser(bytes.NewReader(body))
-	r.ContentLength = int64(len(body))
-	r.Header.Set("Content-Length", strconv.Itoa(len(body)))
+	return append(body, []byte(appJsAppendScript)...)
 }

@@ -1,6 +1,7 @@
 package comfyUI
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"io"
@@ -9,6 +10,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"slices"
+	"strconv"
 
 	"github.com/gorilla/websocket"
 	"github.com/tidwall/gjson"
@@ -82,16 +84,19 @@ func newProxy() *httputil.ReverseProxy {
 			}
 			r.Body.Close()
 
+			var modifiedBody []byte
 			switch r.Request.URL.Path {
-			case "/scripts/ui.js":
-				js_replace.ChangeUiJs(r, body)
-			case "/scripts/app.js":
-				js_replace.ChangeAppJs(r, body)
 			case indexJs:
-				js_replace.ChangeIndexJs(r, body)
-			default:
-				return nil
+				modifiedBody = js_replace.ChangeIndexJs(body)
+			case "/scripts/ui.js":
+				modifiedBody = js_replace.ChangeUiJs(body)
+			case "/scripts/app.js":
+				modifiedBody = js_replace.ChangeAppJs(body)
 			}
+
+			r.Body = io.NopCloser(bytes.NewReader(modifiedBody))
+			r.ContentLength = int64(len(modifiedBody))
+			r.Header.Set("Content-Length", strconv.Itoa(len(modifiedBody)))
 
 			return nil
 		}

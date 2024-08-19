@@ -1,11 +1,7 @@
 package js_replace
 
 import (
-	"bytes"
-	"io"
 	"log"
-	"net/http"
-	"strconv"
 )
 
 var uiJsAppendScript = `
@@ -19,12 +15,8 @@ window.prompt = (message, defaultValue) => {
 };
 `
 
-func ChangeUiJs(r *http.Response, body []byte) {
+func ChangeUiJs(body []byte) []byte {
 	log.Println("changeUiJs")
 
-	modifiedBody := append(body, []byte(uiJsAppendScript)...)
-
-	r.Body = io.NopCloser(bytes.NewReader(modifiedBody))
-	r.ContentLength = int64(len(modifiedBody))
-	r.Header.Set("Content-Length", strconv.Itoa(len(modifiedBody)))
+	return append(body, []byte(uiJsAppendScript)...)
 }

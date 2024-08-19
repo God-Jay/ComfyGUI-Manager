@@ -5,15 +5,12 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 
 	"golang.org/x/net/html"
 )
 
 func FindIndexJs(r *http.Response, body []byte) (bool, string) {
-	log.Println("index html", string(body))
-
 	// Parse the HTML
 	doc, err := html.Parse(bytes.NewReader(body))
 	if err != nil {
@@ -49,18 +46,11 @@ func FindIndexJs(r *http.Response, body []byte) (bool, string) {
 	}
 }
 
-func ChangeIndexJs(r *http.Response, body []byte) {
+func ChangeIndexJs(body []byte) []byte {
 	log.Println("changeIndexJs")
 
-	found, toReplaceBlock := findToReplaceBlock(body, "...getCopyImageOption(img)")
-	if found {
-		body = bytes.ReplaceAll(body, toReplaceBlock, []byte(appJsReplaceSaveImageScript))
-	}
+	modifiedBody := ChangeAppJs(body)
+	modifiedBody = ChangeUiJs(modifiedBody)
 
-	modifiedBody := append(body, []byte(appJsAppendScript)...)
-	modifiedBody = append(modifiedBody, []byte(uiJsAppendScript)...)
-
-	r.Body = io.NopCloser(bytes.NewReader(modifiedBody))
-	r.ContentLength = int64(len(modifiedBody))
-	r.Header.Set("Content-Length", strconv.Itoa(len(modifiedBody)))
+	return modifiedBody
 }
