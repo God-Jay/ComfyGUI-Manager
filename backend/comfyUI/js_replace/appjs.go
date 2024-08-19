@@ -5,59 +5,9 @@ import (
 	"io"
 	"net/http"
 	"strconv"
-	"strings"
 )
 
-func ChangeAppJs(r *http.Response, body []byte) {
-	toReplaceJs := `
-					options.unshift(
-						{
-							content: "Open Image",
-							callback: () => {
-								let url = new URL(img.src);
-								url.searchParams.delete("preview");
-								window.open(url, "_blank");
-							},
-						},
-						...getCopyImageOption(img), 
-						{
-							content: "Save Image",
-							callback: () => {
-								const a = document.createElement("a");
-								let url = new URL(img.src);
-								url.searchParams.delete("preview");
-								a.href = url;
-								a.setAttribute("download", new URLSearchParams(url.search).get("filename"));
-								document.body.append(a);
-								a.click();
-								requestAnimationFrame(() => a.remove());
-							},
-						}
-					);
-`
-	newJs := `
-					options.unshift(
-						{
-							content: "Open Image",
-							callback: () => {
-								let url = new URL(img.src);
-								url.searchParams.delete("preview");
-								window.open(url, "_blank");
-							},
-						},
-						...getCopyImageOption(img), 
-						{
-							content: "Save Image",
-							callback: () => {
-    							window.parent.postMessage({type: 'saveImg', url: img.src}, '*');
-							},
-						}
-					);
-`
-
-	js := strings.ReplaceAll(replaceJs(string(body)), replaceJs(toReplaceJs), replaceJs(newJs))
-
-	script := `
+var appJsAppendScript = `
 window.addEventListener('message', function(event) {
 	if (event.data.type === 'VUE_SAVE_OUTPUT') {
 		app.graphToPrompt().then(p => {
@@ -78,9 +28,25 @@ window.addEventListener('message', function(event) {
 });
 `
 
-	js = js + script
+var appJsReplaceSaveImageScript = `
+						{
+							content: "Save Image",
+							callback: () => {
+    							window.parent.postMessage({type: 'saveImg', url: img.src}, '*');
+							},
+						}
+`
 
-	r.Body = io.NopCloser(bytes.NewReader([]byte(js)))
-	r.ContentLength = int64(len([]byte(js)))
-	r.Header.Set("Content-Length", strconv.Itoa(len([]byte(js))))
+func ChangeAppJs(r *http.Response, body []byte) {
+	found, toReplaceBlock := findToReplaceBlock(body, "...getCopyImageOption(img)")
+
+	if found {
+		body = bytes.ReplaceAll(body, toReplaceBlock, []byte(appJsReplaceSaveImageScript))
+	}
+
+	body = append(body, []byte(appJsAppendScript)...)
+
+	r.Body = io.NopCloser(bytes.NewReader(body))
+	r.ContentLength = int64(len(body))
+	r.Header.Set("Content-Length", strconv.Itoa(len(body)))
 }

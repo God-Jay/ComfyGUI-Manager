@@ -1,18 +1,20 @@
 package comfyUI
 
 import (
-	"comfygui-manager/backend/comfyUI/js_replace"
 	"context"
 	"encoding/json"
-	"github.com/gorilla/websocket"
-	"github.com/tidwall/gjson"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"io"
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"slices"
+
+	"github.com/gorilla/websocket"
+	"github.com/tidwall/gjson"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
+
+	"comfygui-manager/backend/comfyUI/js_replace"
 )
 
 var (
@@ -41,8 +43,33 @@ func newProxy() *httputil.ReverseProxy {
 
 	proxy = httputil.NewSingleHostReverseProxy(targetURL)
 
+	var findJss []string
+	hasIndexJs := false
+	indexJs := ""
+
 	proxy.ModifyResponse = func(r *http.Response) error {
-		if slices.Contains([]string{"/scripts/ui.js", "/scripts/app.js"}, r.Request.URL.Path) {
+		if r.Request.URL.Path == "/" || r.Request.URL.Path == "" {
+			log.Println("find index js", r.Request.URL.Path)
+			if r.StatusCode != 200 {
+				log.Println("error", r.StatusCode)
+				return nil
+			}
+			body, err := io.ReadAll(r.Body)
+			if err != nil {
+				return err
+			}
+			r.Body.Close()
+
+			hasIndexJs, indexJs = js_replace.FindIndexJs(r, body)
+		}
+
+		if hasIndexJs {
+			findJss = []string{indexJs}
+		} else {
+			findJss = []string{"/scripts/ui.js", "/scripts/app.js"}
+		}
+
+		if slices.Contains(findJss, r.Request.URL.Path) {
 			log.Println("modify", r.Request.URL.Path)
 			if r.StatusCode != 200 {
 				log.Println("error", r.StatusCode)
@@ -60,12 +87,15 @@ func newProxy() *httputil.ReverseProxy {
 				js_replace.ChangeUiJs(r, body)
 			case "/scripts/app.js":
 				js_replace.ChangeAppJs(r, body)
+			case indexJs:
+				js_replace.ChangeIndexJs(r, body)
 			default:
 				return nil
 			}
 
 			return nil
 		}
+
 		return nil
 	}
 	return proxy

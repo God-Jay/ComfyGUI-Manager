@@ -6,6 +6,7 @@ import {StoreOutput} from "@wailsjs/go/comfyUI/ComfyUI.js";
 import {useMainStore} from "@/stores/store.js";
 
 const iframeRef = ref()
+const iframeSrc = ref(`http://127.0.0.1:8189?cacheBuster=${new Date().getTime()}`)
 
 const appButton = defineModel('appButton')
 defineProps(['workspaceIndex'])
@@ -58,7 +59,7 @@ onUnmounted(() => {
   <div v-show="appButton === workspaceIndex">
 
     <template v-if="useMainStore().serverIsRunning">
-      <iframe ref="iframeRef" src="http://127.0.0.1:8189" class="comfy-screen"></iframe>
+      <iframe ref="iframeRef" :src="iframeSrc" class="comfy-screen"></iframe>
     </template>
 
     <template v-else>

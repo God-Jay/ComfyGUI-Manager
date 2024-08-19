@@ -8,9 +8,7 @@ import (
 	"strconv"
 )
 
-func ChangeUiJs(r *http.Response, body []byte) {
-	log.Println("changeUiJs")
-	script := `
+var uiJsAppendScript = `
 window.prompt = (message, defaultValue) => {
     app.graphToPrompt().then(p => {
         const json = JSON.stringify(p.workflow, null, 2);
@@ -20,7 +18,11 @@ window.prompt = (message, defaultValue) => {
     return ""
 };
 `
-	modifiedBody := append(body, []byte(script)...)
+
+func ChangeUiJs(r *http.Response, body []byte) {
+	log.Println("changeUiJs")
+
+	modifiedBody := append(body, []byte(uiJsAppendScript)...)
 
 	r.Body = io.NopCloser(bytes.NewReader(modifiedBody))
 	r.ContentLength = int64(len(modifiedBody))
