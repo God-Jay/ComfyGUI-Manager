@@ -49,8 +49,8 @@ func FindIndexJs(r *http.Response, body []byte) (bool, string) {
 func ChangeIndexJs(body []byte) []byte {
 	log.Println("changeIndexJs")
 
-	modifiedBody := ChangeAppJs(body)
-	modifiedBody = ChangeUiJs(modifiedBody)
+	modifiedBody := ChangeAppJs(body, true)
+	modifiedBody = ChangeUiJs(modifiedBody, true)
 
 	return modifiedBody
 }

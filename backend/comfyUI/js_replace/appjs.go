@@ -2,6 +2,7 @@ package js_replace
 
 import (
 	"bytes"
+	"strings"
 )
 
 var appJsAppendScript = `
@@ -34,10 +35,14 @@ var appJsReplaceSaveImageScript = `
 						}
 `
 
-func ChangeAppJs(body []byte) []byte {
+func ChangeAppJs(body []byte, isIndex bool) []byte {
 	found, toReplaceBlock := findToReplaceBlock(body, "...getCopyImageOption(img)")
 	if found {
 		body = bytes.ReplaceAll(body, toReplaceBlock, []byte(appJsReplaceSaveImageScript))
+	}
+
+	if isIndex {
+		appJsAppendScript = strings.ReplaceAll(appJsAppendScript, "app.", "window.comfyAPI.app.app.")
 	}
 
 	return append(body, []byte(appJsAppendScript)...)

@@ -89,9 +89,9 @@ func newProxy() *httputil.ReverseProxy {
 			case indexJs:
 				modifiedBody = js_replace.ChangeIndexJs(body)
 			case "/scripts/ui.js":
-				modifiedBody = js_replace.ChangeUiJs(body)
+				modifiedBody = js_replace.ChangeUiJs(body, false)
 			case "/scripts/app.js":
-				modifiedBody = js_replace.ChangeAppJs(body)
+				modifiedBody = js_replace.ChangeAppJs(body, false)
 			}
 
 			r.Body = io.NopCloser(bytes.NewReader(modifiedBody))
