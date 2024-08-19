@@ -251,7 +251,7 @@ const copyText = async (text) => {
 
   <v-snackbar
       location="top"
-      color="primary"
+      color="success"
       v-model="snackbar"
       timeout="1000"
   >

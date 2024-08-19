@@ -40,7 +40,7 @@ getGitStatus()
 const updating = ref(false)
 
 const snackbar = ref(false)
-const snackbarText = ref()
+const snackbarText = ref("Update Success")
 const timeout = 3000
 
 async function update() {
@@ -49,7 +49,7 @@ async function update() {
   updating.value = false
   console.log("update result", result)
   snackbar.value = true
-  snackbarText.value = result
+  snackbarText.value = "Update Success"
   getHeadCommit()
   getGitStatus()
 }
@@ -152,14 +152,15 @@ async function update() {
 
   <!--  update result-->
   <v-snackbar
+      close-on-content-click
       location="top"
-      color="primary"
+      color="success"
       v-model="snackbar"
       :timeout="timeout"
   >
     {{ snackbarText }}
     <template v-slot:actions>
-      <v-btn color="green" variant="text" @click="snackbar = false">
+      <v-btn color="white" variant="text" @click="snackbar = false">
         Close
       </v-btn>
     </template>
