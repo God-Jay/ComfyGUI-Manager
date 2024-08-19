@@ -219,6 +219,7 @@ const copyText = async (text) => {
 
   <!--  img popup-->
   <v-overlay v-model="imgOverlay"
+             attach="true"
              class="align-center justify-center"
              width="100%">
     <v-container style="max-width: 100%">
