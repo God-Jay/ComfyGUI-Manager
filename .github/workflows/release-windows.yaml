@@ -46,7 +46,7 @@ jobs:
           $ARCH_NAME="${{ matrix.arch }}"
           $TAG="${{ github.ref_name }}"
           $EXE_NAME="${APP_NAME}_v${TAG}_${ARCH_NAME}.exe"
-          echo "EXE_NAME=${EXE_NAME}" >> $GITHUB_ENV
+          echo "EXE_NAME=${EXE_NAME}" | Out-File -FilePath "$env:GITHUB_ENV" -Append
           Rename-Item "build\bin\ComfyGUI Manager.exe" "$EXE_NAME"
 
       - name: Create Release
