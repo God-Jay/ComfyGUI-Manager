@@ -42,11 +42,16 @@ jobs:
 
       - name: Rename executable
         run: |
-          mv "build\bin\ComfyGUI Manager.exe" "ComfyGUI Manager-${{ matrix.arch }}.exe"
+          $APP_NAME="ComfyGUI Manager"
+          $ARCH_NAME="${{ matrix.arch }}"
+          $TAG="${{ github.ref_name }}"
+          $EXE_NAME="${APP_NAME}_v${TAG}_${ARCH_NAME}.exe"
+          echo "EXE_NAME=${EXE_NAME}" >> $GITHUB_ENV
+          Rename-Item "build\bin\ComfyGUI Manager.exe" "$EXE_NAME"
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: ComfyGUI Manager-${{ matrix.arch }}.exe
+          files: ${{ env.EXE_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

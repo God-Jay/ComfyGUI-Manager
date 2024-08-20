@@ -45,18 +45,24 @@ jobs:
 
       - name: Create DMG
         run: |
+          APP_NAME="ComfyGUI Manager"
+          ARCH_NAME="${{ matrix.arch }}"
+          BUILD_DIR="build/bin"
+          TAG="${{ github.ref_name }}"
+          DMG_NAME="${APP_NAME}_${TAG}_${ARCH_NAME}.dmg"
+          echo "DMG_NAME=${DMG_NAME}" >> $GITHUB_ENV
           create-dmg \
-          --volname "ComfyGUI Manager-${{ matrix.arch }}" \
+          --volname "${APP_NAME} ${TAG} ${ARCH_NAME}" \
           --window-pos 200 120 \
           --window-size 800 400 \
           --icon-size 100 \
           --app-drop-link 600 185 \
-          "ComfyGUI Manager-${{ matrix.arch }}.dmg" \
-          "build/bin/ComfyGUI Manager.app"
+          "$DMG_NAME" \
+          "$BUILD_DIR/${APP_NAME}.app"
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: ComfyGUI Manager-${{ matrix.arch }}.dmg
+          files: ${{ env.DMG_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
