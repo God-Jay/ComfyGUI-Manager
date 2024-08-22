@@ -92,10 +92,10 @@ const setImgRef = (i) => ($el) => {
           >
             <!-- TODO port -->
             <v-img
+                aspect-ratio="1"
                 @click="OpenFileInDir('output', imageFile.name)"
                 :src="'http://localhost:8190/output/'+imageFile.name"
                 :ref="setImgRef(i)"
-                cover
             ></v-img>
             <v-card-text class="text-center">
               <v-btn color="success" size="small" class="mb-2" @click.stop="viewWorkflow(imageFile, i)">
