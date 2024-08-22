@@ -50,7 +50,7 @@ const onScroll = (e) => {
 
 onActivated(() => {
   if (scrollTarget.value) {
-    const element = scrollTarget.value.$el || scrollTarget.value.$refs.default; // 根据需要选择正确的引用
+    const element = scrollTarget.value.$el || scrollTarget.value.$refs.default;
     if (element) {
       element.scrollTop = offsetTop.value;
     } else {

@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from "vue";
+import {onActivated, ref} from "vue";
 import modelImg from "@/assets/images/model.png";
 import {GetModelFileSHA256} from "@wailsjs/go/models/Service";
 import {BrowserOpenURL} from "@wailsjs/runtime/runtime.js";
@@ -75,6 +75,24 @@ const copyText = async (text) => {
     console.error('Failed to copy text:', err)
   }
 }
+
+const offsetTop = ref(0)
+const scrollTarget = ref(null)
+
+const onScroll = (e) => {
+  offsetTop.value = e.target.scrollTop
+}
+
+onActivated(() => {
+  if (scrollTarget.value) {
+    const element = scrollTarget.value.$el || scrollTarget.value.$refs.default;
+    if (element) {
+      element.scrollTop = offsetTop.value;
+    } else {
+      console.error("Unable to access the DOM element");
+    }
+  }
+});
 </script>
 
 <template>
@@ -85,8 +103,12 @@ const copyText = async (text) => {
       class="mx-auto"
       min-width="860"
   >
-    <v-container fluid>
-      <v-row dense>
+    <v-container fluid
+                 ref="scrollTarget"
+                 id="container-scroll-target"
+                 class="overflow-y-auto screen-height">
+      <v-row dense
+             v-scroll:#container-scroll-target="onScroll">
         <v-col
             v-for="(file, i) in modelStore.specificModelDir.files"
             :key="i"
@@ -260,5 +282,7 @@ const copyText = async (text) => {
 </template>
 
 <style scoped>
-
+.screen-height {
+  height: calc(100vh - 80px);
+}
 </style>
