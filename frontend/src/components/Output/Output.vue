@@ -18,9 +18,10 @@ getImages()
 const workflowDetailDialog = ref(false)
 const loadConfirmDialog = ref(false)
 const clickFile = ref()
+const clickIndex = ref()
 const hasWorkflow = ref(false)
 const workflow = ref('')
-const viewWorkflow = (outputFile) => {
+const viewWorkflow = (outputFile, i) => {
   GetImageWorkflow(outputFile.name).then(r => {
     if (r === '') {
       r = 'No workflow found'
@@ -31,6 +32,7 @@ const viewWorkflow = (outputFile) => {
     workflow.value = r
     workflowDetailDialog.value = true
     clickFile.value = outputFile
+    clickIndex.value = i
   })
 }
 
@@ -56,6 +58,11 @@ onActivated(() => {
     }
   }
 });
+
+const imgRefs = ref([])
+const setImgRef = (i) => ($el) => {
+  imgRefs.value[i] = $el
+}
 
 </script>
 
@@ -87,13 +94,15 @@ onActivated(() => {
             <v-img
                 @click="OpenFileInDir('output', imageFile.name)"
                 :src="'http://localhost:8190/output/'+imageFile.name"
+                :ref="setImgRef(i)"
                 cover
             ></v-img>
             <v-card-text class="text-center">
-              <v-btn color="success" size="small" class="mb-2" @click.stop="viewWorkflow(imageFile)">
+              <v-btn color="success" size="small" class="mb-2" @click.stop="viewWorkflow(imageFile, i)">
                 view workflow
               </v-btn>
               <p>{{ imageFile.name }}</p>
+              <p>{{ imgRefs[i].naturalHeight + '×' + imgRefs[i].naturalWidth + ' pix' }}</p>
               <p>{{ imageFile.size }}</p>
               <p>{{ moment(imageFile.modTime).format('LLL') }}</p>
             </v-card-text>
@@ -124,7 +133,7 @@ onActivated(() => {
           </v-card-text>
         </div>
 
-        <div>
+        <div class="text-center">
           <v-avatar
               class="ma-3"
               rounded="0"
@@ -132,6 +141,9 @@ onActivated(() => {
           >
             <v-img :src="'http://localhost:8190/output/'+clickFile.name"></v-img>
           </v-avatar>
+          <p>{{ imgRefs[clickIndex].naturalHeight + '×' + imgRefs[clickIndex].naturalWidth + ' pix' }}</p>
+          <p>{{ clickFile.size }}</p>
+          <p>{{ moment(clickFile.modTime).format('LLL') }}</p>
           <v-btn color="primary" @click="loadConfirmDialog = true" :disabled="!hasWorkflow">load workflow</v-btn>
         </div>
       </div>
