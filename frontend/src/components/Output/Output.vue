@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from "vue";
+import {onActivated, ref} from "vue";
 import {GetImages, GetImageWorkflow} from "@wailsjs/go/output/Output.js";
 import {OpenFileInDir} from "@wailsjs/go/backend/App.js";
 import moment from "moment";
@@ -38,6 +38,25 @@ const loadWorkflow = (clickFile) => {
   EventsEmit("LoadImgWorkflow", workflow.value, clickFile.name)
   loadConfirmDialog.value = false
 }
+
+const offsetTop = ref(0)
+const scrollTarget = ref(null)
+
+const onScroll = (e) => {
+  offsetTop.value = e.target.scrollTop
+}
+
+onActivated(() => {
+  if (scrollTarget.value) {
+    const element = scrollTarget.value.$el || scrollTarget.value.$refs.default; // 根据需要选择正确的引用
+    if (element) {
+      element.scrollTop = offsetTop.value;
+    } else {
+      console.error("Unable to access the DOM element");
+    }
+  }
+});
+
 </script>
 
 <template>
@@ -47,8 +66,12 @@ const loadWorkflow = (clickFile) => {
       class="mx-auto"
       min-width="860"
   >
-    <v-container fluid>
-      <v-row dense v-if="images.length !== 0">
+    <v-container fluid
+                 ref="scrollTarget"
+                 id="container-scroll-target"
+                 class="overflow-y-auto screen-height">
+      <v-row dense v-if="images.length !== 0"
+             v-scroll:#container-scroll-target="onScroll">
         <v-col
             v-for="(imageFile, i) in images"
             :key="i"
@@ -149,5 +172,7 @@ const loadWorkflow = (clickFile) => {
 </template>
 
 <style scoped>
-
+.screen-height {
+  height: calc(100vh - 80px);
+}
 </style>
