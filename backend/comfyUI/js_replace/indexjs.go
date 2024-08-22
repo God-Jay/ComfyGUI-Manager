@@ -39,6 +39,9 @@ func FindIndexJs(r *http.Response, body []byte) (bool, string) {
 
 	if scriptSrc != "" {
 		log.Println("found script src:", scriptSrc)
+		if strings.HasPrefix(scriptSrc, "./") {
+			scriptSrc = strings.TrimPrefix(scriptSrc, ".")
+		}
 		return true, scriptSrc
 	} else {
 		log.Println("script src not found")
