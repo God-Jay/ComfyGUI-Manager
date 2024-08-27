@@ -40,7 +40,9 @@ const openFolder = () => {
     </v-hover>
   </v-footer>
 
-  <Dashboard v-if="mainStore.mainNav === 'dashboard'"/>
+  <KeepAlive>
+    <Dashboard v-if="mainStore.mainNav === 'dashboard'"/>
+  </KeepAlive>
 
   <Model v-if="mainStore.mainNav === 'models'"/>
 

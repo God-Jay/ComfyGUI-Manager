@@ -1,12 +1,9 @@
 <script setup>
 import {GitHeadCommit, GitLatestCommit, GitPull, GitStatus} from "@wailsjs/go/comfyUI/ComfyUI.js";
-import {useMainStore} from "@/stores/store.js";
 import {ref} from "vue";
 import moment from "moment";
 import BaseCard from "@/components/Dashboard/Cards/BaseCard.vue";
 import {EventsOn} from "@wailsjs/runtime/runtime.js";
-
-const mainStore = useMainStore()
 
 const currentCommit = ref()
 const getHeadCommit = () => {
@@ -28,14 +25,23 @@ EventsOn("GitLatestCommit", (commit) => {
   }
 })
 
-
+const hasCheck = ref(false)
 const behindCommits = ref([])
 const getGitStatus = () => {
-  GitStatus().then(r => {
-    behindCommits.value = r
-  })
+  if (!hasCheck.value) {
+    GitStatus().then(r => {
+      behindCommits.value = r
+      hasCheck.value = true
+    })
+  }
 }
 getGitStatus()
+
+const refreshCheck = () => {
+  hasCheck.value = false
+  latestCommit.value = undefined
+  GitLatestCommit()
+}
 
 const updating = ref(false)
 
@@ -89,7 +95,10 @@ async function update() {
               <v-card-text>
                 <p>Author: {{ latestCommit?.Author?.Name }}</p>
                 <p>Updated At: {{ moment(latestCommit?.Author?.When).format('LLL') }}</p>
-                <p v-if="behindCommits.length === 0" class="text-green">All files are up to date.</p>
+                <template v-if="behindCommits.length === 0">
+                  <p class="text-green">All files are up to date.</p>
+                  <v-btn border color="primary" class="ml-1 mt-1" @click.stop="refreshCheck">Check</v-btn>
+                </template>
                 <p v-else class="text-red">{{ behindCommits.length }} commits behind head</p>
               </v-card-text>
               <v-card-actions style="position: absolute; bottom: 0"
