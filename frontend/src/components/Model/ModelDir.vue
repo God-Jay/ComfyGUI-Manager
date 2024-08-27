@@ -6,6 +6,8 @@ import {BrowserOpenURL} from "@wailsjs/runtime/runtime.js";
 import {getCivitaiInfo} from "@/api/civitai.js";
 import {useModelStore} from "@/stores/model.js";
 import moment from "moment";
+import RefreshFab from "@/components/RefreshFab.vue";
+import {ListModelDir} from "@wailsjs/go/models/Service.js";
 
 const modelStore = useModelStore()
 
@@ -93,9 +95,20 @@ onActivated(() => {
     }
   }
 });
+
+const refresh = async () => {
+  offsetTop.value = 0
+  const modelDir = await ListModelDir()
+  modelStore.setModelDir(modelDir)
+
+  const dir = modelStore.modelDir.subDirs[modelStore.modelIndex]
+  modelStore.setDirIndex(dir.name, modelStore.modelIndex)
+};
 </script>
 
 <template>
+
+  <RefreshFab :refresh="refresh"></RefreshFab>
 
   <!--  model list-->
   <v-card

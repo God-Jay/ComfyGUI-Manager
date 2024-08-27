@@ -5,6 +5,7 @@ import {OpenFileInDir} from "@wailsjs/go/backend/App.js";
 import moment from "moment";
 import {EventsEmit} from "@wailsjs/runtime/runtime.js";
 import {useMainStore} from "@/stores/store.js";
+import RefreshFab from "@/components/RefreshFab.vue";
 
 const images = ref([])
 
@@ -64,9 +65,17 @@ const setImgRef = (i) => ($el) => {
   imgRefs.value[i] = $el
 }
 
+
+const refresh = async () => {
+  offsetTop.value = 0
+  images.value = []
+  getImages()
+};
 </script>
 
 <template>
+
+  <RefreshFab :refresh="refresh"></RefreshFab>
 
   <v-card
       elevation="0"
