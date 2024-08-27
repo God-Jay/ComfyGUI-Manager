@@ -27,7 +27,7 @@ const openFolder = () => {
 
 <template>
 
-  <LeftList/>
+  <LeftList style="z-index: 9998"/>
 
   <v-footer app>
     <v-hover v-slot="{ isHovering, props }">
@@ -44,11 +44,17 @@ const openFolder = () => {
     <Dashboard v-if="mainStore.mainNav === 'dashboard'"/>
   </KeepAlive>
 
-  <Model v-if="mainStore.mainNav === 'models'"/>
+  <KeepAlive>
+    <Model v-if="mainStore.mainNav === 'models'"/>
+  </KeepAlive>
 
-  <Output v-if="mainStore.mainNav === 'output'"/>
+  <KeepAlive>
+    <Output v-if="mainStore.mainNav === 'output'"/>
+  </KeepAlive>
 
-  <CustomNodes v-if="mainStore.mainNav === 'custom_nodes'"/>
+  <KeepAlive>
+    <CustomNodes v-if="mainStore.mainNav === 'custom_nodes'"/>
+  </KeepAlive>
 
 </template>
 
