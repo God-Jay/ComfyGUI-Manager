@@ -1,8 +1,6 @@
 package models
 
 import (
-	"comfygui-manager/backend/store"
-	"comfygui-manager/backend/util"
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
@@ -12,6 +10,9 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+
+	"comfygui-manager/backend/store"
+	"comfygui-manager/backend/util"
 )
 
 // File represents a file with its name, path, and size
@@ -86,7 +87,7 @@ func listDir(s *Service, modelDir string) *Dir {
 			dirMap[path] = &newDir
 		} else {
 			info, _ := d.Info()
-			if info.Size() < 10*util.MB {
+			if info.Size() < 2*util.MB {
 				return nil
 			}
 
