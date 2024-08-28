@@ -1,11 +1,11 @@
 <script setup>
 import folderImg from "@/assets/images/folder.png";
-
 import {useModelStore} from "@/stores/model.js";
 import {ref} from "vue";
+import RefreshFab from "@/components/RefreshFab.vue";
+import {ListModelDir} from "@wailsjs/go/models/Service.js";
 
 const modelStore = useModelStore()
-
 
 const dialog = ref(false)
 
@@ -20,16 +20,23 @@ const clickCard = (dir) => {
   }
 }
 
+const refresh = async () => {
+  const modelDir = await ListModelDir()
+  modelStore.setModelDir(modelDir)
+};
 </script>
 
 <template>
+
+  <RefreshFab :refresh="refresh"></RefreshFab>
 
   <v-card
       elevation="0"
       class="mx-auto"
       min-width="600"
   >
-    <v-container fluid>
+    <v-container fluid
+                 class="overflow-y-auto screen-height">
       <v-row dense>
         <v-col
             v-for="(dir, i) in modelStore.modelDir.subDirs"
@@ -93,5 +100,7 @@ const clickCard = (dir) => {
 </template>
 
 <style scoped>
-
+.screen-height {
+  height: calc(100vh - 80px);
+}
 </style>

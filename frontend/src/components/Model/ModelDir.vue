@@ -251,7 +251,6 @@ const refresh = async () => {
     </v-card>
   </v-dialog>
 
-
   <!--  img popup-->
   <v-overlay v-model="imgOverlay"
              attach="true"
