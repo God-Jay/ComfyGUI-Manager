@@ -20,14 +20,14 @@ const dirPath = defineModel('dirPath')
   </template>
 
   <template v-else>
-    <v-list-group :value="dir.name">
+    <v-list-group :value="dirPath">
       <template v-slot:activator="{ props }">
         <v-list-item
             :class="{'bg-green': dirPath === modelStore.selectedModelPath}"
             @click="modelStore.selectModelPath(dirPath)"
             :prepend-avatar="folderImg"
             v-bind="props"
-            :title="dir.name"
+            :title="`${dir.name} (${dir.fileCount})`"
         ></v-list-item>
       </template>
 
