@@ -6,9 +6,10 @@ export const useModelStore = defineStore('modelStore', {
     // a function that returns a fresh state
     state: () => ({
         modelDir: {},
-        modelNav: 'main',
-        specificModelDir: {},
-        modelIndex: null
+
+        // empty to be model main path
+        selectedModelPath: '',
+        selectedModelDir: {}
     }),
     // optional getters
     getters: {},
@@ -18,15 +19,32 @@ export const useModelStore = defineStore('modelStore', {
             // `this` is the store instance
             this.modelDir = modelDir
         },
-        setMainNav() {
-            this.modelNav = 'main'
-            this.modelIndex = null
+
+        isMainPath() {
+            return this.selectedModelPath === ''
         },
-        setDirIndex(nav, index) {
-            // `this` is the store instance
-            this.specificModelDir = this.modelDir.subDirs[index]
-            this.modelIndex = index
-            this.modelNav = nav
+        selectModelPath(path) {
+            this.selectedModelPath = path
+            this.selectedModelDir = this.findDir(this.modelDir.subDirs, path)
+        },
+        findDir(dirs, path) {
+            const dirNames = path.split('/');
+
+            let currentDirs = dirs;
+            let result = null;
+
+            for (const dirName of dirNames) {
+                result = currentDirs.find(dir => dir.name === dirName);
+                if (!result) {
+                    return null;
+                }
+                currentDirs = result.subDirs;
+            }
+
+            return result;
         }
     },
+
+
 })
+

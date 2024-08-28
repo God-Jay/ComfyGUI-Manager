@@ -1,7 +1,7 @@
 <script setup>
 import MainDir from "@/components/Model/MainDir.vue";
 import ModelDir from "@/components/Model/ModelDir.vue";
-import LeftList from "@/components/Model/LeftList.vue";
+import LeftList from "@/components/Model/LeftList/LeftList.vue";
 import {useModelStore} from "@/stores/model.js";
 
 const modelStore = useModelStore()
@@ -11,9 +11,9 @@ const modelStore = useModelStore()
 
   <LeftList/>
 
-  <MainDir v-if="modelStore.modelNav === 'main'"/>
+  <MainDir v-if="modelStore.isMainPath()"/>
 
-  <ModelDir v-if="modelStore.modelNav !== 'main'"/>
+  <ModelDir v-if="!modelStore.isMainPath()"/>
 
 </template>
 

@@ -87,7 +87,7 @@ func listDir(s *Service, modelDir string) *Dir {
 			dirMap[path] = &newDir
 		} else {
 			info, _ := d.Info()
-			if info.Size() < 2*util.MB {
+			if info.Size() < 1*util.MB {
 				return nil
 			}
 

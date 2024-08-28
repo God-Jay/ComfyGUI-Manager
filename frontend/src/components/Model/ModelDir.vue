@@ -1,6 +1,7 @@
 <script setup>
 import {onActivated, ref} from "vue";
 import modelImg from "@/assets/images/model.png";
+import folderImg from "@/assets/images/folder.png";
 import {GetModelFileSHA256} from "@wailsjs/go/models/Service";
 import {BrowserOpenURL} from "@wailsjs/runtime/runtime.js";
 import {getCivitaiInfo} from "@/api/civitai.js";
@@ -101,8 +102,7 @@ const refresh = async () => {
   const modelDir = await ListModelDir()
   modelStore.setModelDir(modelDir)
 
-  const dir = modelStore.modelDir.subDirs[modelStore.modelIndex]
-  modelStore.setDirIndex(dir.name, modelStore.modelIndex)
+  modelStore.selectModelPath(modelStore.selectedModelPath)
 };
 </script>
 
@@ -123,7 +123,28 @@ const refresh = async () => {
       <v-row dense
              v-scroll:#container-scroll-target="onScroll">
         <v-col
-            v-for="(file, i) in modelStore.specificModelDir.files"
+            v-for="(dir, i) in modelStore.selectedModelDir.subDirs"
+            :key="i"
+            cols="12" sm="3" md="2" lg="2" xl="1"
+        >
+          <v-card
+              hover
+              rounded="lg"
+              class="mx-auto"
+              max-width="344"
+          >
+            <v-img
+                :src="folderImg"
+                cover
+            ></v-img>
+            <v-card-text class="text-center">
+              <p>{{ dir.name }}</p>
+              <p>{{ dir.totalFileSize }}</p>
+            </v-card-text>
+          </v-card>
+        </v-col>
+        <v-col
+            v-for="(file, i) in modelStore.selectedModelDir.files"
             :key="i"
             cols="12" sm="3" md="2" lg="2" xl="1"
         >
