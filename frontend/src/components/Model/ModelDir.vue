@@ -276,9 +276,9 @@ const refresh = async () => {
   <v-overlay v-model="imgOverlay"
              attach="true"
              class="align-center justify-center"
-             width="100%">
-    <v-container style="max-width: 100%">
-      <v-carousel hide-delimiters progress="success" height="100vh" v-model="imgOverlayIndex">
+             width="95%">
+    <v-container style="max-width: 100%" class="screen-height">
+      <v-carousel hide-delimiters progress="primary" height="100%" v-model="imgOverlayIndex">
         <v-carousel-item v-for="(image, i) in fileInfo.civitaiInfo.images" :value="i">
           <div class="d-flex fill-height justify-center align-center">
             <v-img
