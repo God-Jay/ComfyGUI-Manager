@@ -65,6 +65,13 @@ const setImgRef = (i) => ($el) => {
   imgRefs.value[i] = $el
 }
 
+const imgOverlay = ref(false)
+const imgOverlayIndex = ref(0)
+
+function clickImg(img, imgIndex) {
+  imgOverlay.value = true
+  imgOverlayIndex.value = imgIndex
+}
 
 const refresh = async () => {
   offsetTop.value = 0
@@ -102,16 +109,19 @@ const refresh = async () => {
             <!-- TODO port -->
             <v-img
                 aspect-ratio="1"
-                @click="OpenFileInDir('output', imageFile.name)"
+                @click.stop="clickImg(imageFile, i)"
                 :src="'http://localhost:8190/output/'+imageFile.name"
                 :ref="setImgRef(i)"
             ></v-img>
-            <v-card-text class="text-center">
+            <v-card-text class="text-center pt-1 pb-1">
+              <v-btn color="primary" size="small" class="mb-2" @click="OpenFileInDir('output', imageFile.name)">
+                open in path
+              </v-btn>
               <v-btn color="success" size="small" class="mb-2" @click.stop="viewWorkflow(imageFile, i)">
                 view workflow
               </v-btn>
               <p>{{ imageFile.name }}</p>
-              <p>{{ imgRefs[i].naturalHeight + '×' + imgRefs[i].naturalWidth + ' pix' }}</p>
+              <p>{{ imgRefs[i].naturalWidth + '×' + imgRefs[i].naturalHeight + ' pix' }}</p>
               <p>{{ imageFile.size }}</p>
               <p>{{ moment(imageFile.modTime).format('LLL') }}</p>
             </v-card-text>
@@ -125,6 +135,7 @@ const refresh = async () => {
     </v-container>
   </v-card>
 
+  <!--  view workflow-->
   <v-dialog
       attach="true"
       scroll-strategy="none"
@@ -146,11 +157,11 @@ const refresh = async () => {
           <v-avatar
               class="ma-3"
               rounded="0"
-              size="125"
+              size="180"
           >
             <v-img :src="'http://localhost:8190/output/'+clickFile.name"></v-img>
           </v-avatar>
-          <p>{{ imgRefs[clickIndex].naturalHeight + '×' + imgRefs[clickIndex].naturalWidth + ' pix' }}</p>
+          <p>{{ imgRefs[clickIndex].naturalWidth + '×' + imgRefs[clickIndex].naturalHeight + ' pix' }}</p>
           <p>{{ clickFile.size }}</p>
           <p>{{ moment(clickFile.modTime).format('LLL') }}</p>
           <v-btn color="primary" @click="loadConfirmDialog = true" :disabled="!hasWorkflow">load workflow</v-btn>
@@ -159,6 +170,7 @@ const refresh = async () => {
     </v-card>
   </v-dialog>
 
+  <!--  load workflow-->
   <v-dialog
       attach="true"
       scroll-strategy="none"
@@ -189,6 +201,39 @@ const refresh = async () => {
       </v-card-actions>
     </v-card>
   </v-dialog>
+
+  <!--  img popup-->
+  <v-overlay v-model="imgOverlay"
+             attach="true"
+             class="align-center justify-center"
+             width="100%">
+    <v-container style="max-width: 100%">
+      <v-carousel hide-delimiters progress="success" height="100vh" v-model="imgOverlayIndex">
+        <v-carousel-item
+            v-for="(imageFile, i) in images"
+            :value="i">
+          <div class="d-flex fill-height justify-center align-center">
+            <v-img
+                @click.stop="imgOverlay = false"
+                max-width="85wh"
+                max-height="90vh"
+                height="auto"
+                :src="'http://localhost:8190/output/'+imageFile.name"
+            >
+              <template v-slot:placeholder>
+                <div class="d-flex align-center justify-center fill-height">
+                  <v-progress-circular
+                      color="grey-lighten-4"
+                      indeterminate
+                  ></v-progress-circular>
+                </div>
+              </template>
+            </v-img>
+          </div>
+        </v-carousel-item>
+      </v-carousel>
+    </v-container>
+  </v-overlay>
 
 </template>
 

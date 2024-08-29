@@ -156,9 +156,11 @@ func proxyWebSocket(ctx context.Context, dst, src *websocket.Conn, errc chan err
 		json.Unmarshal(message, &wsMsg)
 		if wsMsg.Type == "executed" {
 			log.Println("executed ....", string(message))
-			if outputFile := gjson.GetBytes(message, "data.output.images.0.filename"); outputFile.Exists() {
-				log.Println("send js events")
-				runtime.EventsEmit(ctx, "OutputImageFile", outputFile.String())
+			if outputType := gjson.GetBytes(message, "data.output.images.0.type"); outputType.Exists() && outputType.String() == "output" {
+				if outputFile := gjson.GetBytes(message, "data.output.images.0.filename"); outputFile.Exists() {
+					log.Println("send js events")
+					runtime.EventsEmit(ctx, "OutputImageFile", outputFile.String())
+				}
 			}
 		}
 
