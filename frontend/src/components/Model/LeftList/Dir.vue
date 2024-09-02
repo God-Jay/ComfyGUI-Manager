@@ -1,7 +1,9 @@
 <script setup>
 import folderImg from "@/assets/images/folder.png";
 import {useModelStore} from "@/stores/model.js";
+import {useMainStore} from "@/stores/store.js";
 
+const mainStore = useMainStore()
 const modelStore = useModelStore()
 
 const dir = defineModel('dir')
@@ -12,7 +14,7 @@ const dirPath = defineModel('dirPath')
   <template v-if="dir.subDirs == null">
     <v-list-item
         :class="{'bg-green': dirPath === modelStore.selectedModelPath}"
-        @click="modelStore.selectModelPath(dirPath)"
+        @click="modelStore.selectModelPath(dirPath); mainStore.setCurrentPath('models' + '/' + modelStore.selectedModelPath, '')"
         link
         :title="`${dir.name} (${dir.fileCount})`"
         :prepend-avatar="folderImg"
@@ -24,7 +26,7 @@ const dirPath = defineModel('dirPath')
       <template v-slot:activator="{ props }">
         <v-list-item
             :class="{'bg-green': dirPath === modelStore.selectedModelPath}"
-            @click="modelStore.selectModelPath(dirPath)"
+            @click="modelStore.selectModelPath(dirPath); mainStore.setCurrentPath('models' + '/' + modelStore.selectedModelPath, '')"
             :prepend-avatar="folderImg"
             v-bind="props"
             :title="`${dir.name} (${dir.fileCount})`"

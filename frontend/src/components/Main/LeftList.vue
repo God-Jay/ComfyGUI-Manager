@@ -21,7 +21,7 @@ const changeMainNav = (nav) => {
         nav
     >
       <v-list-item prepend-icon="mdi-view-dashboard" value="dashboard"
-                   @click.stop="changeMainNav('dashboard')"
+                   @click.stop="changeMainNav('dashboard'); mainStore.setCurrentPath('', '')"
                    :active="mainStore.mainNav === 'dashboard'"></v-list-item>
 
       <v-list-item prepend-icon="mdi-application-cog-outline" value="messages"
@@ -29,11 +29,11 @@ const changeMainNav = (nav) => {
                    :active="mainStore.mainNav === 'models'"></v-list-item>
 
       <v-list-item prepend-icon="mdi-image-multiple-outline" value="messages"
-                   @click.stop="changeMainNav('output')"
+                   @click.stop="changeMainNav('output'); mainStore.setCurrentPath('output', '')"
                    :active="mainStore.mainNav === 'output'"></v-list-item>
 
       <v-list-item prepend-icon="mdi-resistor-nodes" value="messages"
-                   @click.stop="changeMainNav('custom_nodes')"
+                   @click.stop="changeMainNav('custom_nodes'); mainStore.setCurrentPath('custom_nodes', '')"
                    :active="mainStore.mainNav === 'custom_nodes'"></v-list-item>
     </v-list>
   </v-navigation-drawer>

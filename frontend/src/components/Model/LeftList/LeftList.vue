@@ -1,9 +1,19 @@
 <script setup>
 import Dir from "@/components/Model/LeftList/Dir.vue";
 import {useModelStore} from "@/stores/model.js";
+import {onActivated, onMounted} from "vue";
+import {useMainStore} from "@/stores/store.js";
 
+const mainStore = useMainStore()
 const modelStore = useModelStore()
 
+
+onActivated(() => {
+  mainStore.setCurrentPath('models' + '/' + modelStore.selectedModelPath, '')
+})
+onMounted(() => {
+  mainStore.setCurrentPath('models' + '/' + modelStore.selectedModelPath, '')
+})
 </script>
 
 <template>

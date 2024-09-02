@@ -8,6 +8,8 @@ export const useMainStore = defineStore('mainStore', {
         comfyUIPath: '',
         mainNav: 'dashboard',
         serverIsRunning: false,
+
+        currentPath: {path: '', fileName: ''},
     }),
     // optional getters
     getters: {
@@ -27,6 +29,12 @@ export const useMainStore = defineStore('mainStore', {
         },
         setComfyUIPath(path) {
             this.comfyUIPath = path
+        },
+        setCurrentPath(path, fileName) {
+            console.log("setCurrentPath", path, fileName)
+            // `this` is the store instance
+            this.currentPath.path = path
+            this.currentPath.fileName = fileName
         },
         setServerIsRunning(isRunning) {
             this.serverIsRunning = isRunning

@@ -5,7 +5,7 @@ import Output from "@/components/Output/Output.vue";
 import Dashboard from "@/components/Dashboard/Dashboard.vue";
 import CustomNodes from "@/components/CustomNodes/CustomNodes.vue";
 import {ListModelDir} from "@wailsjs/go/models/Service.js";
-import {OpenFolder} from "@wailsjs/go/backend/App.js";
+import {OpenFileInDir, OpenFolder} from "@wailsjs/go/backend/App.js";
 import {useMainStore} from "@/stores/store.js";
 import {useModelStore} from "@/stores/model.js";
 
@@ -19,23 +19,27 @@ async function getModels() {
 
 getModels()
 
-const openFolder = () => {
-  OpenFolder()
-}
-
 </script>
 
 <template>
 
   <LeftList style="z-index: 9998"/>
 
-  <v-footer app>
+  <v-footer app style="justify-content: space-between;">
     <v-hover v-slot="{ isHovering, props }">
-      <p @click="openFolder"
+      <p @click="OpenFolder"
          v-bind="props"
          style="cursor: pointer"
          :class="isHovering ? 'text-primary' : 'text-secondary'">
         ComfyUI Path: {{ mainStore.comfyUIPath }}
+      </p>
+    </v-hover>
+    <v-hover v-slot="{ isHovering, props }">
+      <p @click="OpenFileInDir(mainStore.currentPath.path, mainStore.currentPath.fileName)"
+         v-bind="props"
+         style="cursor: pointer"
+         :class="isHovering ? 'text-primary' : 'text-secondary'">
+        Open Current Path
       </p>
     </v-hover>
   </v-footer>

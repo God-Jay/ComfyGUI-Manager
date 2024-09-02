@@ -2,6 +2,7 @@ package backend
 
 import (
 	"context"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -68,20 +69,36 @@ func (a *App) SelectFolder(title string) string {
 }
 
 func (a *App) OpenFolder() error {
+	cmd := openPath(store.ComfyUIPath)
+	return cmd.Start()
+}
+
+func openPath(path string) *exec.Cmd {
 	var cmd *exec.Cmd
 	switch goruntime.GOOS {
 	case "windows":
-		cmd = exec.Command("explorer", store.ComfyUIPath)
+		cmd = exec.Command("explorer", path)
 	case "darwin":
-		cmd = exec.Command("open", store.ComfyUIPath)
+		cmd = exec.Command("open", path)
 	default:
-		cmd = exec.Command("xdg-open", store.ComfyUIPath)
+		cmd = exec.Command("xdg-open", path)
 	}
-	return cmd.Start()
+	return cmd
 }
 
 func (a *App) OpenFileInDir(dir string, fileName string) error {
 	fp := filepath.Join(store.ComfyUIPath, dir, fileName)
+	log.Println("open file", fp)
+	var cmd *exec.Cmd
+	if fileName == "" {
+		cmd = openPath(fp)
+	} else {
+		cmd = selectFile(fp)
+	}
+	return cmd.Start()
+}
+
+func selectFile(fp string) *exec.Cmd {
 	var cmd *exec.Cmd
 	switch goruntime.GOOS {
 	case "windows":
@@ -91,7 +108,7 @@ func (a *App) OpenFileInDir(dir string, fileName string) error {
 	default:
 		cmd = exec.Command("xdg-open", fp)
 	}
-	return cmd.Start()
+	return cmd
 }
 
 func (a *App) Prompt(defaultFileName, title string) string {
