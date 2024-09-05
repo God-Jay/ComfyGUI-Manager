@@ -1,5 +1,5 @@
 <script setup>
-import {onActivated, ref} from "vue";
+import {onActivated, onBeforeUnmount, onMounted, ref} from "vue";
 import {GetImages, GetImageWorkflow} from "@wailsjs/go/output/Output.js";
 import {OpenFileInDir} from "@wailsjs/go/backend/App.js";
 import moment from "moment";
@@ -78,6 +78,31 @@ const refresh = async () => {
   images.value = []
   getImages()
 };
+
+const handleKeydown = (e) => {
+  if (e.key === 'ArrowLeft') {
+    if (imgOverlayIndex.value === 0) {
+      imgOverlayIndex.value = imgRefs.value.length - 1
+    } else {
+      imgOverlayIndex.value = imgOverlayIndex.value - 1
+    }
+  } else if (e.key === 'ArrowRight') {
+    if (imgOverlayIndex.value === imgRefs.value.length - 1) {
+      imgOverlayIndex.value = 0
+    } else {
+      imgOverlayIndex.value = imgOverlayIndex.value + 1
+    }
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeydown);
+});
+
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup>
-import {onActivated, ref} from "vue";
+import {onActivated, onBeforeUnmount, onMounted, ref} from "vue";
 import modelImg from "@/assets/images/model.png";
 import folderImg from "@/assets/images/folder.png";
 import {GetModelFileSHA256} from "@wailsjs/go/models/Service";
@@ -24,6 +24,8 @@ async function clickModel(file) {
   if (file === fileInfo.value) {
     dialog.value = !dialog.value
   } else {
+    currentImgModelIndex.value = 0
+
     failure.value = false
     state.value = undefined
 
@@ -51,11 +53,9 @@ async function clickModel(file) {
 }
 
 const imgOverlay = ref(false)
-const imgOverlayIndex = ref(0)
 
 function clickImg(img, imgIndex) {
   imgOverlay.value = true
-  imgOverlayIndex.value = imgIndex
 }
 
 function replaceLargeImg(image) {
@@ -68,7 +68,7 @@ function openCivitai(url) {
   BrowserOpenURL(url)
 }
 
-const currentImgModel = ref(0)
+const currentImgModelIndex = ref(0)
 const snackbar = ref(false)
 const copyText = async (text) => {
   try {
@@ -104,6 +104,30 @@ const refresh = async () => {
 
   modelStore.selectModelPath(modelStore.selectedModelPath)
 };
+
+const handleKeydown = (e) => {
+  if (e.key === 'ArrowLeft') {
+    if (currentImgModelIndex.value === 0) {
+      currentImgModelIndex.value = fileInfo.value.civitaiInfo.images.length - 1
+    } else {
+      currentImgModelIndex.value = currentImgModelIndex.value - 1
+    }
+  } else if (e.key === 'ArrowRight') {
+    if (currentImgModelIndex.value === fileInfo.value.civitaiInfo.images.length - 1) {
+      currentImgModelIndex.value = 0
+    } else {
+      currentImgModelIndex.value = currentImgModelIndex.value + 1
+    }
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeydown);
+});
 </script>
 
 <template>
@@ -210,9 +234,9 @@ const refresh = async () => {
                   class="ma-2" max-width="900">
             <template v-slot:append>
               <v-btn variant="plain" icon="mdi-content-copy" size="sm"
-                     @click="copyText(fileInfo.civitaiInfo.images[currentImgModel]?.meta?.prompt)"></v-btn>
+                     @click="copyText(fileInfo.civitaiInfo.images[currentImgModelIndex]?.meta?.prompt)"></v-btn>
             </template>
-            <v-card-text>{{ fileInfo.civitaiInfo.images[currentImgModel]?.meta?.prompt }}</v-card-text>
+            <v-card-text>{{ fileInfo.civitaiInfo.images[currentImgModelIndex]?.meta?.prompt }}</v-card-text>
           </v-card>
 
           <v-card color="grey"
@@ -220,9 +244,9 @@ const refresh = async () => {
                   class="ma-2" max-width="900">
             <template v-slot:append>
               <v-btn variant="plain" icon="mdi-content-copy" size="sm"
-                     @click="copyText(fileInfo.civitaiInfo.images[currentImgModel]?.meta?.negativePrompt)"></v-btn>
+                     @click="copyText(fileInfo.civitaiInfo.images[currentImgModelIndex]?.meta?.negativePrompt)"></v-btn>
             </template>
-            <v-card-text>{{ fileInfo.civitaiInfo.images[currentImgModel]?.meta?.negativePrompt }}</v-card-text>
+            <v-card-text>{{ fileInfo.civitaiInfo.images[currentImgModelIndex]?.meta?.negativePrompt }}</v-card-text>
           </v-card>
 
           <div v-html="fileInfo.civitaiInfo.description" class="pl-8" style="max-width: 600px"></div>
@@ -230,7 +254,7 @@ const refresh = async () => {
 
         <!--        img carousel-->
         <div class="float-right mr-3" style="width: 400px">
-          <v-carousel hide-delimiters progress="success" v-model="currentImgModel">
+          <v-carousel hide-delimiters progress="success" v-model="currentImgModelIndex">
             <template v-for="(image, i) in fileInfo.civitaiInfo.images">
               <v-carousel-item>
                 <div class="d-flex justify-space-around align-center bg-grey-lighten-4">
@@ -278,7 +302,7 @@ const refresh = async () => {
              class="align-center justify-center"
              width="95%">
     <v-container style="max-width: 100%" class="screen-height">
-      <v-carousel hide-delimiters progress="primary" height="100%" v-model="imgOverlayIndex">
+      <v-carousel hide-delimiters progress="primary" height="100%" v-model="currentImgModelIndex">
         <v-carousel-item v-for="(image, i) in fileInfo.civitaiInfo.images" :value="i">
           <div class="d-flex fill-height justify-center align-center">
             <v-img
