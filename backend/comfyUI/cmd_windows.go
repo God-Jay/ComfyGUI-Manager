@@ -4,6 +4,7 @@
 package comfyUI
 
 import (
+	"log"
 	"os/exec"
 	"syscall"
 )
@@ -21,5 +22,14 @@ func stopCmd(cmd *exec.Cmd) error {
 	if err != nil {
 		return err
 	}
-	return cmd.Wait()
+	if err := cmd.Wait(); err != nil {
+		var exitErr *exec.ExitError
+		if errors.As(err, &exitErr) && exitErr.ExitCode() != 0 {
+			log.Println("Process was killed and exited with status:", exitErr.ExitCode())
+			return nil
+		}
+		return err
+	}
+
+	return nil
 }
