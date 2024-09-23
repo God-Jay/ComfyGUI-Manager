@@ -6,5 +6,5 @@ import (
 )
 
 func (c *ComfyUI) StoreOutput(workflow string, outputFileName string) error {
-	return store.SetDb[string](util.GetOutputStorePath(outputFileName), workflow)
+	return store.SetDb[string](util.GetStoreOutputWorkflowPath(outputFileName), workflow)
 }

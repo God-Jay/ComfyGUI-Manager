@@ -106,6 +106,7 @@ export namespace output {
 	    size: number;
 	    // Go type: time
 	    modTime: any;
+	    stared: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new ImageFile(source);
@@ -116,6 +117,7 @@ export namespace output {
 	        this.name = source["name"];
 	        this.size = source["size"];
 	        this.modTime = this.convertValues(source["modTime"], null);
+	        this.stared = source["stared"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

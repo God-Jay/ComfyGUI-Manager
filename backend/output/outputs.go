@@ -1,18 +1,21 @@
 package output
 
 import (
-	"comfygui-manager/backend/store"
-	"comfygui-manager/backend/util"
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"slices"
 	"strings"
 	"time"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
+
+	"comfygui-manager/backend/store"
+	"comfygui-manager/backend/util"
 )
 
 // TODO change port
@@ -36,6 +39,7 @@ type ImageFile struct {
 	Name    string    `json:"name"`
 	Size    int64     `json:"size"`
 	ModTime time.Time `json:"modTime"`
+	Stared  bool      `json:"stared"`
 }
 
 func (f ImageFile) MarshalJSON() ([]byte, error) {
@@ -62,10 +66,12 @@ func (o *Output) GetImages() []ImageFile {
 			ext := strings.ToLower(filepath.Ext(path))
 			if ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif" {
 				relPath, _ := filepath.Rel(imageDir, path)
+				stared, _ := store.GetFromDb[bool](util.GetStoreOutputStarPath(relPath))
 				images = append(images, ImageFile{
 					Name:    relPath,
 					Size:    info.Size(),
 					ModTime: info.ModTime(),
+					Stared:  stared,
 				})
 			}
 		}
@@ -78,8 +84,62 @@ func (o *Output) GetImages() []ImageFile {
 	return images
 }
 
+// TODO change port
+func (o *Output) GetStaredImages() []ImageFile {
+	images := make([]ImageFile, 0)
+
+	items, err := store.GetFromDbWithPrefix[bool](util.GetStorePrefix(util.StoreTypeStar))
+	if err != nil {
+		return nil
+	}
+	var starMap = make(map[string]bool)
+	for _, item := range items {
+		starMap[item.FileName] = true
+	}
+
+	imageDir := filepath.Join(store.ComfyUIPath, "output")
+	filepath.Walk(imageDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() {
+			ext := strings.ToLower(filepath.Ext(path))
+			if ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif" {
+				relPath, _ := filepath.Rel(imageDir, path)
+				if ok := starMap[relPath]; ok {
+					images = append(images, ImageFile{
+						Name:    relPath,
+						Size:    info.Size(),
+						ModTime: info.ModTime(),
+						Stared:  true,
+					})
+				}
+			}
+		}
+		return nil
+	})
+	slices.SortFunc(images, func(a, b ImageFile) int {
+		return int(b.ModTime.Unix() - a.ModTime.Unix())
+	})
+
+	return images
+}
+
+func (o *Output) StarImg(outputFile string) bool {
+	stared, _ := store.GetFromDb[bool](util.GetStoreOutputStarPath(outputFile))
+	if stared {
+		log.Println("unstar", outputFile)
+		store.DelDb(util.GetStoreOutputStarPath(outputFile))
+		return false
+	} else {
+		log.Println("star", outputFile)
+		store.SetDb(util.GetStoreOutputStarPath(outputFile), true)
+		return true
+	}
+}
+
 func (o *Output) GetImageWorkflow(outputFile string) string {
-	workflow, _ := store.GetFromDb[string](util.GetOutputStorePath(outputFile))
+	workflow, _ := store.GetFromDb[string](util.GetStoreOutputWorkflowPath(outputFile))
 	return workflow
 }
 

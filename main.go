@@ -1,19 +1,21 @@
 package main
 
 import (
+	"context"
+	"embed"
+	"fmt"
+	"net/http"
+	"os"
+	"strings"
+
+	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/options"
+	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+
 	"comfygui-manager/backend"
 	"comfygui-manager/backend/comfyUI"
 	"comfygui-manager/backend/models"
 	"comfygui-manager/backend/output"
-	"context"
-	"embed"
-	"fmt"
-	"github.com/wailsapp/wails/v2"
-	"github.com/wailsapp/wails/v2/pkg/options"
-	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
-	"net/http"
-	"os"
-	"strings"
 )
 
 //go:embed all:frontend/dist

@@ -1,5 +1,7 @@
 package store
 
+var _ = initDB()
+
 var ComfyUIPath = getComfyUIPath()
 
 func getComfyUIPath() string {
