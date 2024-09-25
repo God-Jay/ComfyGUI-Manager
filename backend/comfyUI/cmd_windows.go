@@ -4,6 +4,7 @@
 package comfyUI
 
 import (
+	"errors"
 	"log"
 	"os/exec"
 	"syscall"
