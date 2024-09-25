@@ -63,7 +63,6 @@ func GetFromDbWithPrefix[T any](prefix string) ([]struct {
 			item := it.Item()
 			key := string(item.Key())
 			fileName := strings.TrimPrefix(key, prefix+".")
-			log.Println("db seek key: ", key, " fileName: ", fileName, " prefix: ", prefix)
 			var t T
 			err := item.Value(func(val []byte) error {
 				return json.Unmarshal(val, &t)
