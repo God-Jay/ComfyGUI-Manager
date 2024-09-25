@@ -1,11 +1,11 @@
 <script setup>
-import {onActivated, onBeforeUnmount, onMounted, ref} from "vue";
+import {onBeforeUnmount, onMounted, ref} from "vue";
 import {GetImages, GetImageWorkflow, GetStaredImages, StarImg} from "@wailsjs/go/output/Output.js";
-import {OpenFileInDir} from "@wailsjs/go/backend/App.js";
 import moment from "moment";
 import {EventsEmit} from "@wailsjs/runtime/runtime.js";
 import {useMainStore} from "@/stores/store.js";
 import RefreshFab from "@/components/RefreshFab.vue";
+import CardList from "@/components/Output/CardList.vue";
 
 const tab = ref()
 
@@ -50,37 +50,8 @@ const loadWorkflow = (clickFile) => {
   loadConfirmDialog.value = false
 }
 
-const offsetTop = ref(0)
-const scrollTarget = ref(null)
-
-const onScroll = (e) => {
-  offsetTop.value = e.target.scrollTop
-}
-
-onActivated(() => {
-  if (scrollTarget.value) {
-    const element = scrollTarget.value.$el || scrollTarget.value.$refs.default;
-    if (element) {
-      element.scrollTop = offsetTop.value;
-    } else {
-      console.error("Unable to access the DOM element");
-    }
-  }
-});
-
-// const imgRefs = ref([])
 // TODO: improve performance
 const setImgRef = (i, imageFile) => ($el) => {
-  // if (imageFile.ref !== undefined) {
-  //   return
-  // }
-  // if ($el.naturalHeight === undefined) {
-  //   return
-  // }
-  // imageFile.ref = {
-  //   naturalWidth: $el.naturalWidth,
-  //   naturalHeight: $el.naturalHeight,
-  // }
   if (imageFile.ref !== undefined) {
     return
   }
@@ -102,7 +73,6 @@ const starImg = (img) => {
 }
 
 const refresh = async () => {
-  offsetTop.value = 0
   getImages()
 };
 
@@ -156,123 +126,13 @@ onBeforeUnmount(() => {
     <v-card-text class="pa-0">
       <v-tabs-window v-model="tab">
         <v-tabs-window-item value="all-outputs">
-          <v-card
-              elevation="0"
-              class="mx-auto"
-              min-width="860"
-          >
-            <v-container fluid
-                         ref="scrollTarget"
-                         id="container-scroll-target"
-                         class="overflow-y-auto screen-height-tab">
-              <v-row dense v-if="images.length !== 0"
-                     v-scroll:#container-scroll-target="onScroll">
-                <v-col
-                    v-for="(imageFile, i) in images"
-                    :key="i"
-                    cols="12" sm="3" md="2" lg="2" xl="1"
-                >
-                  <v-card
-                      hover
-                      rounded="lg"
-                      class="mx-auto"
-                      max-width="344"
-                  >
-                    <!-- TODO port -->
-                    <v-img
-                        aspect-ratio="1"
-                        @click.stop="clickImg(imageFile, i)"
-                        :src="'http://localhost:8190/output/'+imageFile.name"
-                        :ref="setImgRef(i, imageFile)"
-                    >
-                      <v-toolbar color="transparent">
-                        <template v-slot:append>
-                          <v-btn variant="tonal" icon="mdi-star" :color="imageFile.stared ? 'red': 'white'"
-                                 @click.stop="starImg(imageFile)"></v-btn>
-                        </template>
-                      </v-toolbar>
-                    </v-img>
-                    <v-card-text class="text-center pt-1 pb-1">
-                      <v-btn color="primary" size="small" class="mb-2" @click="OpenFileInDir('output', imageFile.name)">
-                        open in path
-                      </v-btn>
-                      <v-btn color="success" size="small" class="mb-2" @click.stop="viewWorkflow(imageFile, i)">
-                        view workflow
-                      </v-btn>
-                      <p>{{ imageFile.name }}</p>
-                      <p>{{ imageFile.ref?.naturalWidth + '×' + imageFile.ref?.naturalHeight + ' pix' }}</p>
-                      <p>{{ imageFile.size }}</p>
-                      <p>{{ moment(imageFile.modTime).format('LLL') }}</p>
-                    </v-card-text>
-                  </v-card>
-                </v-col>
-              </v-row>
-              <!--TODO-->
-              <template v-else>
-                no output
-              </template>
-            </v-container>
-          </v-card>
+          <CardList :images="images" :clickImg="clickImg" :setImgRef="setImgRef" :starImg="starImg"
+                    :viewWorkflow="viewWorkflow"/>
         </v-tabs-window-item>
 
         <v-tabs-window-item value="stared-outputs">
-          <v-card
-              elevation="0"
-              class="mx-auto"
-              min-width="860"
-          >
-            <v-container fluid
-                         ref="scrollTarget"
-                         id="container-scroll-target"
-                         class="overflow-y-auto screen-height-tab">
-              <v-row dense v-if="staredImages.length !== 0"
-                     v-scroll:#container-scroll-target="onScroll">
-                <v-col
-                    v-for="(imageFile, i) in staredImages"
-                    :key="i"
-                    cols="12" sm="3" md="2" lg="2" xl="1"
-                >
-                  <v-card
-                      hover
-                      rounded="lg"
-                      class="mx-auto"
-                      max-width="344"
-                  >
-                    <!-- TODO port -->
-                    <v-img
-                        aspect-ratio="1"
-                        @click.stop="clickImg(imageFile, i)"
-                        :src="'http://localhost:8190/output/'+imageFile.name"
-                        :ref="setImgRef(i, imageFile)"
-                    >
-                      <v-toolbar color="transparent">
-                        <template v-slot:append>
-                          <v-btn variant="tonal" icon="mdi-star" :color="imageFile.stared ? 'red': 'white'"
-                                 @click.stop="starImg(imageFile)"></v-btn>
-                        </template>
-                      </v-toolbar>
-                    </v-img>
-                    <v-card-text class="text-center pt-1 pb-1">
-                      <v-btn color="primary" size="small" class="mb-2" @click="OpenFileInDir('output', imageFile.name)">
-                        open in path
-                      </v-btn>
-                      <v-btn color="success" size="small" class="mb-2" @click.stop="viewWorkflow(imageFile, i)">
-                        view workflow
-                      </v-btn>
-                      <p>{{ imageFile.name }}</p>
-                      <p>{{ imageFile.ref?.naturalWidth + '×' + imageFile.ref?.naturalHeight + ' pix' }}</p>
-                      <p>{{ imageFile.size }}</p>
-                      <p>{{ moment(imageFile.modTime).format('LLL') }}</p>
-                    </v-card-text>
-                  </v-card>
-                </v-col>
-              </v-row>
-              <!--TODO-->
-              <template v-else>
-                no output
-              </template>
-            </v-container>
-          </v-card>
+          <CardList :images="staredImages" :clickImg="clickImg" :setImgRef="setImgRef" :starImg="starImg"
+                    :viewWorkflow="viewWorkflow"/>
         </v-tabs-window-item>
 
       </v-tabs-window>
@@ -389,9 +249,5 @@ onBeforeUnmount(() => {
 <style scoped>
 .screen-height {
   height: calc(100vh - 80px);
-}
-
-.screen-height-tab {
-  height: calc(100vh - 80px - 48px);
 }
 </style>
