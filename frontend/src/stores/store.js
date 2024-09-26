@@ -15,11 +15,7 @@ export const useMainStore = defineStore('mainStore', {
     getters: {
         hasSetComfyUIPath() {
             console.log(this.comfyUIPath)
-            console.log(this.comfyUIPath !== '')
             return this.comfyUIPath !== ''
-        },
-        getAA() {
-            return this.comfyUIPath
         }
     },
     // optional actions

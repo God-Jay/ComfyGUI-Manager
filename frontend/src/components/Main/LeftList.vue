@@ -24,15 +24,15 @@ const changeMainNav = (nav) => {
                    @click.stop="changeMainNav('dashboard'); mainStore.setCurrentPath('', '')"
                    :active="mainStore.mainNav === 'dashboard'"></v-list-item>
 
-      <v-list-item prepend-icon="mdi-application-cog-outline" value="messages"
+      <v-list-item prepend-icon="mdi-application-cog-outline" value="models"
                    @click.stop="changeMainNav('models')"
                    :active="mainStore.mainNav === 'models'"></v-list-item>
 
-      <v-list-item prepend-icon="mdi-image-multiple-outline" value="messages"
+      <v-list-item prepend-icon="mdi-image-multiple-outline" value="output"
                    @click.stop="changeMainNav('output'); mainStore.setCurrentPath('output', '')"
                    :active="mainStore.mainNav === 'output'"></v-list-item>
 
-      <v-list-item prepend-icon="mdi-resistor-nodes" value="messages"
+      <v-list-item prepend-icon="mdi-resistor-nodes" value="custom_nodes"
                    @click.stop="changeMainNav('custom_nodes'); mainStore.setCurrentPath('custom_nodes', '')"
                    :active="mainStore.mainNav === 'custom_nodes'"></v-list-item>
     </v-list>
