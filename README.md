@@ -24,6 +24,7 @@ A comfyUI gui manager written in golang, wails, vue and vuetify.
     - [x] view civitai model info
 - comfyUI output manage
     - [x] view output images
+    - [x] star output images
     - [ ] manage output images
     - [x] view output image's workflow
     - [x] load output image's workflow
