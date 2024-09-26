@@ -57,6 +57,7 @@ async function update() {
   snackbar.value = true
   snackbarText.value = "Update Success"
   getHeadCommit()
+  hasCheck.value = false
   getGitStatus()
 }
 </script>
