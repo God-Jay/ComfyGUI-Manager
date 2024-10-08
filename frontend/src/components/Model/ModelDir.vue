@@ -228,8 +228,7 @@ onBeforeUnmount(() => {
                 target="_blank">View in Civitai
             </v-btn>
             Image Size:
-            {{ fileInfo.civitaiInfo.images[currentImgModelIndex]?.width }} x
-            {{ fileInfo.civitaiInfo.images[currentImgModelIndex]?.height }}
+            {{ fileInfo.civitaiInfo.images[currentImgModelIndex]?.meta?.Size }}
           </v-card-text>
 
 
