@@ -220,12 +220,16 @@ onBeforeUnmount(() => {
           <v-card-text>
             Civitai:
             <v-btn
+                class="mr-2"
                 variant="flat"
                 color="success"
                 size="small"
                 @click="openCivitai(`https://civitai.com/models/${fileInfo.civitaiInfo.modelId}`)"
                 target="_blank">View in Civitai
             </v-btn>
+            Image Size:
+            {{ fileInfo.civitaiInfo.images[currentImgModelIndex]?.width }} x
+            {{ fileInfo.civitaiInfo.images[currentImgModelIndex]?.height }}
           </v-card-text>
 
 
