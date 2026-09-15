@@ -1,3 +1,5 @@
+
+
 # README
 
 ## About
@@ -42,9 +44,8 @@ comfyUI [comfyUI](https://github.com/comfyanonymous/ComfyUI)
 
 wails [wails](https://github.com/wailsapp/wails)
 
-vue [vue](https://github.com/vuejs/vue)
+vue [vue](https://github.com/vuejs/core)
 
 vuetify [vuetify](https://github.com/vuetifyjs/vuetify)
 
 civitai [civitai](https://civitai.com/)
-
